@@ -42,6 +42,13 @@ Xray.constructorInfo = (constructor) ->
   for own info, func of window.XrayData
     return info if func is constructor
 
+Xray.scanTemplates = ->
+  for beginScript in $('.xray-template-start')
+    Xray.add $(beginScript).next(),
+      name: '(Partial)',
+      path: $(beginScript).attr('data-xray-path')
+
+
 # Open the given filesystem path by calling out to Xray's server.
 # TODO: error handling of any kind, XSS warnings
 Xray.open = (path) ->
@@ -56,9 +63,13 @@ Xray.remove = (el) ->
   if el instanceof Xray.Element
     Xray.elements.splice(Xray.elements.indexOf(el), 1)
   else
-    for element in Xray.elements
-      if element.$el[0] == el
-        Xray.remove(element); break
+    Xray.remove Xray.findElement(el)
+
+Xray.findElement = (el) ->
+  el = el[0] if el instanceof jQuery
+  for element in Xray.elements
+    if element.el == el
+      return element
 
 # Show the Xray overlay
 Xray.show = ->
@@ -72,7 +83,8 @@ Xray.hide = ->
 
 # Wraps a DOM element that Xray is tracking
 class Xray.Element
-  constructor: (@el, @attrs = {}) ->
+  constructor: (el, @attrs = {}) ->
+    @el = if el instanceof jQuery then el[0] else el
     @$el = $(@el)
     @name = @attrs.name
     @path = @attrs.path
@@ -115,6 +127,7 @@ class Xray.Overlay
     Xray.isShowing = true
     $('body').append @$overlay
     @shownBoxes = []
+    Xray.scanTemplates()
     for element in Xray.elements
       continue unless element.isVisible()
       element.makeBox()
