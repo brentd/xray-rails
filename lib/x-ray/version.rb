@@ -1,0 +1,3 @@
+module Xray
+  VERSION = "0.0.1"
+end
