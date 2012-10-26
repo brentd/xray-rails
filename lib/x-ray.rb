@@ -1,5 +1,4 @@
 require "x-ray/version"
-require 'sprockets'
 
 module Xray
   CONSTRUCTOR_REGEX = /^([\s]*)(?!_)([\w\.]+)\s*\=\s*(\(function\(_super\)|(?!jQuery|_)[\w\.]+.extend\()/
@@ -17,8 +16,9 @@ module Xray
     augmented_source = \
       "<script type='xray-template-start' data-xray-path='#{path}'></script>" +
       "\n#{source}\n" +
-      "<script type='xray-template-end'></script>"
-    ActionView::OutputBuffer === source ? ActionView::OutputBuffer.new(augmented_source) : augmented_source
+      "<script type='xray-template-end' data-xray-path='#{path}'></script>"
+    ActionView::OutputBuffer === source ?
+      ActionView::OutputBuffer.new(augmented_source) : augmented_source
   end
 
   class Engine < ::Rails::Engine

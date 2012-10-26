@@ -42,14 +42,17 @@ Xray.constructorInfo = (constructor) ->
   for own info, func of window.XrayData
     return info if func is constructor
 
-Xray.scanTemplates = ->
+# Scans the document for templates, creating Xray.Elements for them.
+Xray.addTemplateElements = ->
   for beginScript in $('script[type="xray-template-start"]')
-    el = $(beginScript).next()
+    path = $(beginScript).attr('data-xray-path')
+    # This could very well be multiple elements. Xray.add() supports adding
+    # a jQuery object wrapping multiple elements for this reason.
+    el = $(beginScript).nextUntil('script[type="xray-template-end"]')
     continue if Xray.findElement(el)
-    Xray.add $(beginScript).next(),
-      name: '(Template)',
-      path: $(beginScript).attr('data-xray-path')
-
+    Xray.add el,
+      name: path.split('/').slice(-1)[0]
+      path: path
 
 # Open the given filesystem path by calling out to Xray's server.
 # TODO: error handling of any kind, XSS warnings
@@ -58,6 +61,7 @@ Xray.open = (path) ->
 
 # Add a DOM element with associated metadata to be tracked by Xray
 Xray.add = (el, info = {}) ->
+  console.log info
   Xray.elements.push new Xray.Element(el, info)
 
 # Remove a DOM element from Xray
@@ -70,8 +74,7 @@ Xray.remove = (el) ->
 Xray.findElement = (el) ->
   el = el[0] if el instanceof jQuery
   for element in Xray.elements
-    if element.el == el
-      return element
+    return element if element.el == el
   null
 
 # Show the Xray overlay
@@ -88,7 +91,7 @@ Xray.hide = ->
 class Xray.Element
   constructor: (el, @attrs = {}) ->
     @el = if el instanceof jQuery then el[0] else el
-    @$el = $(@el)
+    @$el = $(el)
     @name = @attrs.name
     @path = @attrs.path
 
@@ -96,20 +99,50 @@ class Xray.Element
     @$el.is(':visible')
 
   makeBox: ->
-    offset = @$el.offset()
+    bbox = @_computeBoundingBox()
     @$box = $('<div>').css
       position   : 'absolute'
-      left       : offset.left
-      top        : offset.top
-      width      : @$el.outerWidth()
-      height     : @$el.outerHeight()
       background : 'rgba(255,255,255,0.8)'
       color      : '#999'
       fontFamily : '"Helvetica Neue", sans-serif'
       zIndex     : 99999
+      top        : bbox.top
+      left       : bbox.left
+      width      : bbox.width
+      height     : bbox.height
     @$box.click => Xray.open @path
-    @$box.text @name
-    @$box
+    @$box.append @name
+
+  _computeBoundingBox: ->
+    bbox = {}
+    if @$el.length == 1
+      offset = @$el.offset()
+      bbox =
+        left   : offset.left
+        top    : offset.top
+        width  : @$el.outerWidth()
+        height : @$el.outerHeight()
+    else if @$el.length > 1
+      boxFrame =
+        top    : $(document).outerHeight()
+        left   : $(document).outerWidth()
+        right  : 0
+        bottom : 0
+      for innerEl in @$el
+        $el = $(innerEl)
+        frame = $el.offset()
+        frame.right  = frame.left + $el.outerWidth()
+        frame.bottom = frame.top + $el.outerHeight()
+        boxFrame.top    = frame.top if frame.top < boxFrame.top
+        boxFrame.left   = frame.left if frame.left < boxFrame.left
+        boxFrame.right  = frame.right if frame.right > boxFrame.right
+        boxFrame.bottom = frame.bottom if frame.bottom > boxFrame.bottom
+      bbox =
+        left   : boxFrame.left
+        top    : boxFrame.top
+        width  : boxFrame.right - boxFrame.left
+        height : boxFrame.bottom - boxFrame.top
+    return bbox
 
 # Singleton class for the Xray "overlay" invoked by the keyboard shortcut
 class Xray.Overlay
@@ -130,7 +163,7 @@ class Xray.Overlay
     Xray.isShowing = true
     $('body').append @$overlay
     @shownBoxes = []
-    Xray.scanTemplates()
+    Xray.addTemplateElements()
     for element in Xray.elements
       continue unless element.isVisible()
       element.makeBox()
