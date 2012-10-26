@@ -43,9 +43,11 @@ Xray.constructorInfo = (constructor) ->
     return info if func is constructor
 
 Xray.scanTemplates = ->
-  for beginScript in $('.xray-template-start')
+  for beginScript in $('script[type="xray-template-start"]')
+    el = $(beginScript).next()
+    continue if Xray.findElement(el)
     Xray.add $(beginScript).next(),
-      name: '(Partial)',
+      name: '(Template)',
       path: $(beginScript).attr('data-xray-path')
 
 
@@ -70,6 +72,7 @@ Xray.findElement = (el) ->
   for element in Xray.elements
     if element.el == el
       return element
+  null
 
 # Show the Xray overlay
 Xray.show = ->
