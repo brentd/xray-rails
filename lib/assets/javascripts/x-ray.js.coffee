@@ -3,7 +3,7 @@
 # 1. Xray metadata code is inserted during asset compilation.
 #    a. For Backbone.Views, JS is inserted that will record the Backbone.View
 #       constructor with its metadata in window.XrayData
-#    b. For templates, <script> tags are inserted at the beginning and the end
+#    b. For templates, HTML comments are inserted at the beginning and the end
 #       of the template.
 #
 # 2. After DOM is loaded, go through XrayData, hooking into Backbone.View to
@@ -44,13 +44,16 @@ Xray.constructorInfo = (constructor) ->
 
 # Scans the document for templates, creating Xray.Elements for them.
 Xray.addTemplateElements = ->
-  for beginScript in $('script[type="xray-template-start"]')
-    path = $(beginScript).attr('data-xray-path')
-    # This could very well be multiple elements. Xray.add() supports adding
-    # a jQuery object wrapping multiple elements for this reason.
-    el = $(beginScript).nextUntil('script[type="xray-template-end"]')
-    continue if Xray.findElement(el)
-    Xray.add el,
+  comments = $('*').contents().filter ->
+    this.nodeType == 8 and this.data[0..10] == " XRAY START"
+  for comment in comments
+    [_, id, path] = comment.data.match(/^ XRAY START (\d+) (.*) $/)
+    $templateContents = new jQuery
+    el = comment.nextSibling
+    until !el or (el.nodeType == 8 and el.data == " XRAY END #{id} ")
+      $templateContents.push el if el.nodeType == 1
+      el = el.nextSibling
+    Xray.add $templateContents,
       name: path.split('/').slice(-1)[0]
       path: path
 
@@ -61,8 +64,8 @@ Xray.open = (path) ->
 
 # Add a DOM element with associated metadata to be tracked by Xray
 Xray.add = (el, info = {}) ->
-  console.log info
-  Xray.elements.push new Xray.Element(el, info)
+  unless Xray.findElement(el)
+    Xray.elements.push new Xray.Element(el, info)
 
 # Remove a DOM element from Xray
 Xray.remove = (el) ->
@@ -79,21 +82,19 @@ Xray.findElement = (el) ->
 
 # Show the Xray overlay
 Xray.show = ->
-  console.log 'X-raying'
   Xray.Overlay.instance().show()
 
 # Hide the Xray overlay
 Xray.hide = ->
-  console.log 'Hiding X-ray'
   Xray.Overlay.instance().hide()
 
 # Wraps a DOM element that Xray is tracking
 class Xray.Element
-  constructor: (el, @attrs = {}) ->
+  constructor: (el, attrs = {}) ->
     @el = if el instanceof jQuery then el[0] else el
     @$el = $(el)
-    @name = @attrs.name
-    @path = @attrs.path
+    @name = attrs.name
+    @path = attrs.path
 
   isVisible: ->
     @$el.is(':visible')
@@ -103,8 +104,9 @@ class Xray.Element
     @$box = $('<div>').css
       position   : 'absolute'
       background : 'rgba(255,255,255,0.8)'
-      color      : '#999'
+      color      : '#666'
       fontFamily : '"Helvetica Neue", sans-serif'
+      fontSize   : '13px'
       zIndex     : 99999
       top        : bbox.top
       left       : bbox.left
