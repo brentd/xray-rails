@@ -13,12 +13,17 @@ module Xray
   end
 
   def self.augment_template(source, path)
+    id = next_id
     augmented_source = \
-      "<script type='xray-template-start' data-xray-path='#{path}'></script>" +
-      "\n#{source}\n" +
-      "<script type='xray-template-end' data-xray-path='#{path}'></script>"
+      "<!-- XRAY START #{id} #{path} -->\n#{source}\n<!-- XRAY END #{id} -->"
     ActionView::OutputBuffer === source ?
       ActionView::OutputBuffer.new(augmented_source) : augmented_source
+  end
+
+  def self.next_id
+    cur_id = (@id ||= 1)
+    @id += 1
+    cur_id
   end
 
   class Engine < ::Rails::Engine
