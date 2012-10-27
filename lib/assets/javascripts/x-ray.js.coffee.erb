@@ -101,13 +101,7 @@ class Xray.Element
 
   makeBox: ->
     bbox = @_computeBoundingBox()
-    @$box = $('<div>').css
-      position   : 'absolute'
-      background : 'rgba(255,255,255,0.8)'
-      color      : '#666'
-      fontFamily : '"Helvetica Neue", sans-serif'
-      fontSize   : '13px'
-      zIndex     : 99999
+    @$box = $('<div class="xray-box">').css
       top        : bbox.top
       left       : bbox.left
       width      : bbox.width
@@ -152,17 +146,12 @@ class Xray.Overlay
     @singletonInstance ||= new this
 
   constructor: ->
-    @$overlay = $('<div>').css
-      position   : 'fixed'
-      left       : 0
-      top        : 0
-      bottom     : 0
-      right      : 0
-      background : 'rgba(0,0,0,0.5)'
-      zIndex     : 99999
+    @$overlay = $('<div id="xray-overlay">')
+    @$style = $('<link rel="stylesheet" href="<%= asset_path("xray.css") %>">')
 
   show: ->
     Xray.isShowing = true
+    $('head').append @$style
     $('body').append @$overlay
     @shownBoxes = []
     Xray.addTemplateElements()
@@ -174,6 +163,7 @@ class Xray.Overlay
 
   hide: ->
     Xray.isShowing = false
+    @$style.remove()
     @$overlay.remove()
     $box.remove() for $box in @shownBoxes
     @shownBoxes = []

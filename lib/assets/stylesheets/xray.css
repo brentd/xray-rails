@@ -1,0 +1,49 @@
+#xray-overlay {
+  -webkit-animation: overlay-anim 0.7s ease-out;
+  -webkit-animation-fill-mode: forwards;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  /*background: rgba(0,0,0,0.6);*/
+  background: -webkit-radial-gradient(center, ellipse cover, rgba(0,0,0,0.7) 10%, rgba(0,0,0,1) 100%);
+  z-index: 99999;
+
+}
+
+.xray-box {
+  -webkit-animation: box-anim 0.5s ease-out;
+  -webkit-animation-fill-mode: forwards;
+  position: absolute;
+  background: rgba(255,255,255,0.8);
+  color: #666;
+  font-family: "Helvetica Neue", sans-serif;
+  font-size: 13px;
+  z-index: 99999;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.2);
+}
+
+.xray-box .xray-box {
+  background: rgba(255,255,255,0.01);
+  background: red;
+}
+
+.xray-box:hover {
+  cursor: pointer;
+  /*background: rgba(255,255,255,0.9);*/
+  /*outline: 2px solid lightblue;*/
+  background: #b794ff;
+  /*box-shadow: 0 4px 10px rgba(0,0,0,0.2);*/
+}
+
+@-webkit-keyframes box-anim {
+  0%   { -webkit-filter: blur(10px); }
+  100% { -webkit-filter: none; }
+}
+
+@-webkit-keyframes overlay-anim {
+  0% { opacity: 0; background: #fff; }
+  10% { opacity: 1; background: #fff;}
+  100% { opacity: 0.8;}
+}
