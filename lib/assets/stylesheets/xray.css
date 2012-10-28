@@ -1,49 +1,36 @@
 #xray-overlay {
-  -webkit-animation: overlay-anim 0.7s ease-out;
-  -webkit-animation-fill-mode: forwards;
-  position: fixed;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  /*background: rgba(0,0,0,0.6);*/
-  background: -webkit-radial-gradient(center, ellipse cover, rgba(0,0,0,0.7) 10%, rgba(0,0,0,1) 100%);
-  z-index: 99999;
-
+  position: fixed; left: 0; top: 0; bottom: 0; right: 0;
+  background: -webkit-radial-gradient(center, ellipse cover, rgba(0,0,0,0.4) 10%, rgba(0,0,0,0.8) 100%);
+  z-index: 9000;
 }
 
 .xray-box {
-  -webkit-animation: box-anim 0.5s ease-out;
+  -webkit-backface-visibility: hidden; /* Can haz GPU? */
+  -webkit-animation: blur-in 0.3s ease-out;
   -webkit-animation-fill-mode: forwards;
   position: absolute;
-  background: rgba(255,255,255,0.8);
+  background: rgba(255,255,255,0.3);
+  outline: 1px solid rgba(255,255,255,0.8);
+  outline-offset: -1px;
   color: #666;
   font-family: "Helvetica Neue", sans-serif;
   font-size: 13px;
-  z-index: 99999;
-  box-shadow: 0 1px 1px rgba(0,0,0,0.2);
-}
-
-.xray-box .xray-box {
-  background: rgba(255,255,255,0.01);
-  background: red;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.7);
 }
 
 .xray-box:hover {
   cursor: pointer;
-  /*background: rgba(255,255,255,0.9);*/
-  /*outline: 2px solid lightblue;*/
-  background: #b794ff;
-  /*box-shadow: 0 4px 10px rgba(0,0,0,0.2);*/
+  background: rgba(255,255,255,0.4);
+  outline: 2px solid #fff;
+  outline-offset: -2px;
 }
 
-@-webkit-keyframes box-anim {
-  0%   { -webkit-filter: blur(10px); }
+@-webkit-keyframes blur-in {
+  0%   { -webkit-filter: blur(5px); }
   100% { -webkit-filter: none; }
 }
 
-@-webkit-keyframes overlay-anim {
-  0% { opacity: 0; background: #fff; }
-  10% { opacity: 1; background: #fff;}
-  100% { opacity: 0.8;}
+@-webkit-keyframes fade-in {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
 }

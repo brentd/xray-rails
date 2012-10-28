@@ -14,10 +14,7 @@ module Xray
 
   def self.augment_template(source, path)
     id = next_id
-    augmented_source = \
-      "<!-- XRAY START #{id} #{path} -->\n#{source}\n<!-- XRAY END #{id} -->"
-    ActionView::OutputBuffer === source ?
-      ActionView::OutputBuffer.new(augmented_source) : augmented_source
+    "<!-- XRAY START #{id} #{path} -->\n#{source}\n<!-- XRAY END #{id} -->".html_safe
   end
 
   def self.next_id
