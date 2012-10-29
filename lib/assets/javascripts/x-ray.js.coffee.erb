@@ -7,21 +7,21 @@
 #       of the template.
 #
 # 2. After DOM is loaded, go through XrayData, hooking into Backbone.View to
-#    add view instances to Xray.elements as they're instantiated. NOTE: This
+#    add view instances to Xray.specimens as they're instantiated. NOTE: This
 #    means Xray has to be included into a page before any app code runs so its
 #    DOM loaded callback can happen first. Not a big deal.
 #
 # 3. Xray is invoked via keyboard shortcut
 #    a. Go through the DOM looking for template script tags. Create Elements
 #       representing them. (regenerate on each invocation?)
-#    b. Turn created Xray.elements into boxes and display them in the overlay.
+#    b. Turn created Xray.specimens into boxes and display them in the overlay.
 
 window.Xray = {}
 
-# Container for Xray.Element instances
-Xray.elements = []
+# All collected Xray.Specimens
+Xray.specimens = []
 
-# Initialize Xray - hook into Backbone.View to create Xray.Elements as the views
+# Initialize Xray - hook into Backbone.View to create Xray.specimens as the views
 # are instantiated.
 Xray.init = ->
   return if Xray.initialized
@@ -42,10 +42,12 @@ Xray.constructorInfo = (constructor) ->
   for own info, func of window.XrayData
     return info if func is constructor
 
-# Scans the document for templates, creating Xray.Elements for them.
-Xray.addTemplateElements = ->
+# Scans the document for templates, creating Xray.specimens for them.
+Xray.addTemplates = ->
+  # 1. Find all <!-- XRAY START ... --> comments
   comments = $('*:not(iframe,script)').contents().filter ->
     this.nodeType == 8 and this.data[0..10] == " XRAY START"
+  # 2. Elements in between the start and end comments are the Specimen's contents.
   for comment in comments
     [_, id, path] = comment.data.match(/^ XRAY START (\d+) (.*) $/)
     $templateContents = new jQuery
@@ -66,19 +68,19 @@ Xray.open = (path) ->
 
 # Add a DOM element with associated metadata to be tracked by Xray
 Xray.add = (el, info = {}) ->
-  unless !el || el.length == 0 || Xray.findElement(el)
-    Xray.elements.push new Xray.Element(el, info)
+  unless !el || el.length == 0 || Xray.findSpecimen(el)
+    Xray.specimens.push new Xray.Specimen(el, info)
 
 # Remove a DOM element from Xray
 Xray.remove = (el) ->
-  if el instanceof Xray.Element
-    Xray.elements.splice(Xray.elements.indexOf(el), 1)
+  if el instanceof Xray.Specimen
+    Xray.specimens.splice(Xray.specimens.indexOf(el), 1)
   else
-    Xray.remove Xray.findElement(el)
+    Xray.remove Xray.findSpecimen(el)
 
-Xray.findElement = (el) ->
+Xray.findSpecimen = (el) ->
   el = el[0] if el instanceof jQuery
-  for element in Xray.elements
+  for element in Xray.specimens
     return element if element.el == el
   null
 
@@ -91,7 +93,7 @@ Xray.hide = ->
   Xray.Overlay.instance().hide()
 
 # Wraps a DOM element that Xray is tracking
-class Xray.Element
+class Xray.Specimen
   constructor: (el, attrs = {}) ->
     @el = if el instanceof jQuery then el[0] else el
     @$el = $(el)
@@ -104,14 +106,13 @@ class Xray.Element
   makeBox: ->
     bbox = @_computeBoundingBox()
     @$box = $('<div class="xray-box">').css
-      top        : bbox.top
-      left       : bbox.left
-      width      : bbox.width
-      height     : bbox.height
-    if @$el.css('position') == 'fixed'
-      @$box.css position: 'fixed'
+      top    : bbox.top
+      left   : bbox.left
+      width  : bbox.width
+      height : bbox.height
     @$box.click =>
-      # console.log @$el
+      console.log "Opening #{@path}"
+      console.log @$el
       Xray.open @path
     @$box.append @name
 
@@ -166,11 +167,11 @@ class Xray.Overlay
     $('head').append @$style
     $('body').append @$overlay
     @shownBoxes = []
-    Xray.addTemplateElements()
-    for element in Xray.elements
+    Xray.addTemplates()
+    for element in Xray.specimens
       continue unless element.isVisible()
       element.makeBox()
-      element.$box.css('z-index' : 10000 + element.bbox.top)
+      element.$box.css(zIndex: Math.ceil((10000 + element.bbox.top + element.bbox.left)))
       @shownBoxes.push element.$box
       $('body').append element.$box
 
