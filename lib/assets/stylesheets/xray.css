@@ -4,12 +4,12 @@
   z-index: 9000;
 }
 
-.xray-box {
+.xray-specimen {
   -webkit-backface-visibility: hidden; /* Can haz GPU? */
-  -webkit-animation: blur-in 0.3s ease-out;
+  -webkit-animation: blur-in 0.4s ease-out;
   -webkit-animation-fill-mode: forwards;
   position: absolute;
-  background: rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.15);
   outline: 1px solid rgba(255,255,255,0.8);
   outline-offset: -1px;
   color: #666;
@@ -18,11 +18,33 @@
   box-shadow: 0 1px 3px rgba(0,0,0,0.7);
 }
 
-.xray-box:hover {
+.xray-specimen:hover {
   cursor: pointer;
-  background: rgba(255,255,255,0.4);
-  outline: 2px solid #fff;
+  background: rgba(255,255,255,0.2);
+  outline-width: 2px;
   outline-offset: -2px;
+}
+
+.xray-specimen.TemplateSpecimen {
+  outline: 1px solid rgba(255,50,50,0.8);
+  background: rgba(255,50,50,0.05);
+}
+
+.xray-specimen.TemplateSpecimen:hover {
+  outline-width: 2px;
+}
+
+.xray-specimen-handle {
+  float:left;
+  background: #fff;
+  padding: 3px;
+  color: #333;
+  font-size: 11px;
+}
+
+.xray-specimen-handle.TemplateSpecimen {
+  background: rgba(255,50,50,0.8);
+  color: #fff;
 }
 
 @-webkit-keyframes blur-in {
