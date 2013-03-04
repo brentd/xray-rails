@@ -1,4 +1,4 @@
-require "x-ray/version"
+require "xray/version"
 require "open3"
 
 module Xray
@@ -74,7 +74,7 @@ module Xray
       app.assets.register_preprocessor 'application/javascript', :xray do |context, data|
         path = context.pathname.to_s
         if path =~ /\/backbone\.js$/ # TODO: directly augment backbone instead to avoid load order crap
-          context.require_asset('x-ray.js')
+          context.require_asset('xray.js')
         elsif path =~ /\.(jst|hamlc)(\.|$)/
           data = Xray.augment_template(data, path)
         end
