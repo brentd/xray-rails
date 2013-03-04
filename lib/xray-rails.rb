@@ -94,7 +94,11 @@ module Xray
         def render_with_xray(*args, &block)
           path = identifier
           source = render_without_xray(*args, &block)
-          Xray.augment_template(source, path)
+          if path !~ /xray_bar\./
+            Xray.augment_template(source, path)
+          else
+            source
+          end
         end
         alias_method_chain :render, :xray
       end

@@ -63,7 +63,7 @@
   padding: 0 8px;
   background: #333;
   color: #fff;
-  background-image: -webkit-linear-gradient(top, #111 0%, #222 15%, #333);
+  background-image: -webkit-linear-gradient(top, #111 0%, #2f2f2f 15%, #333 98%, #222 100%);
 }
 
 #xray-bar .xray-bar-btn {
@@ -123,14 +123,14 @@
 #xray-bar .xray-bar-controller-action { color: #ddd; }
 
 #xray-bar .xray-bar-layout,
-#xray-bar .xray-bar-layout b:before { background-color: #C01509; }
+#xray-bar .xray-bar-layout b:before { background-color: #a23b33; }
 #xray-bar .xray-bar-layout:hover,
-#xray-bar .xray-bar-layout:hover b:before { background-color: #dd3e32; }
+#xray-bar .xray-bar-layout:hover b:before { background-color: #c2453b; }
 
 #xray-bar .xray-bar-view,
 #xray-bar .xray-bar-view b:before { background-color: #ff2c1e; }
 #xray-bar .xray-bar-view:hover,
-#xray-bar .xray-bar-view:hover b:before { background-color: #ff4648; }
+#xray-bar .xray-bar-view:hover b:before { background-color: #ff593a; }
 
 
 

@@ -30,6 +30,8 @@ Xray.init = ->
   return if Xray.initialized
   Xray.initialized = true
 
+  new Xray.Bar
+
   if window.XrayData and window.Backbone?.View
     _delegateEvents = Backbone.View::delegateEvents
     Backbone.View::delegateEvents = ->
@@ -224,17 +226,18 @@ class Xray.Overlay
     @shownBoxes = []
 
 
-class Xray.DevBar
-  initialize: ->
-    @$el = $('<div id="xray-dev-bar"></div>')
-
+class Xray.Bar
+  constructor: ->
+    @$el = $('#xray-bar')
+    @$el.css(zIndex: 2147483647)
+    @$el.find('.xray-bar-btn:not([data-path=""])').click -> Xray.open($(this).attr('data-path'))
 
 # Initialize on DOM ready.
 $ -> Xray.init()
 
 # Register keyboard shortcuts
 $(document).keydown (e) ->
-  if Xray.isShowing and e.keyCode is 27 # esc
-    Xray.hide()
   if e.ctrlKey and e.metaKey and e.keyCode is 88 # cmd+ctrl+x
     if Xray.isShowing then Xray.hide() else Xray.show()
+  if Xray.isShowing and e.keyCode is 27 # esc
+    Xray.hide()
