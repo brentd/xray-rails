@@ -4,10 +4,8 @@ require "open3"
 module Xray
   CONSTRUCTOR_REGEX = /^([\s]*)(?!_)([\w\.]+)\s*\=\s*(\(function\(_super\)|(?!jQuery|_)[\w\.]+.extend\()/
 
-  def self.augment_application_js(source, path)
-    source.gsub(/(\/\/|#)\s*\=\s*require jquery\s*$/) do
-      "#{$1}= require jquery\n#{$1}= require x-ray"
-    end
+  def self.request_info
+    @request_info ||= {}
   end
 
   def self.augment_js(source, path)
@@ -22,12 +20,7 @@ module Xray
   def self.augment_template(source, path)
     id = next_id
     augmented = "<!-- XRAY START #{id} #{path} -->\n#{source}\n<!-- XRAY END #{id} -->"
-    case source
-    when ActiveSupport::SafeBuffer
-      ActiveSupport::SafeBuffer.new(augmented)
-    else
-      augmented
-    end
+    ActiveSupport::SafeBuffer === source ? ActiveSupport::SafeBuffer.new(augmented) : augmented
   end
 
   def self.next_id
@@ -62,7 +55,6 @@ module Xray
     paths['app/assets'] = 'lib/assets'
 
     initializer "xray.initialize" do |app|
-      # Xray.start_server
       app.middleware.use Xray::Middleware
 
       # Augment JS files, including compiled coffeescript
@@ -75,24 +67,26 @@ module Xray
         end
       end
 
-      APP_JS_PATH = "#{app.root}/app/assets/javascripts/application.js" # TODO: don't hardcode this?
+      # TODO: How can I not hardcode these?
+      APP_JS_PATH  = "#{app.root}/app/assets/javascripts/application."
+      APP_CSS_PATH = "#{app.root}/app/assets/stylesheets/application."
 
-      # Augment javascript templates as a preprocessor
       app.assets.register_preprocessor 'application/javascript', :xray do |context, data|
         path = context.pathname.to_s
-        if path.starts_with?(APP_JS_PATH)
-          Xray.augment_application_js(data, path)
+        if path =~ /\/backbone\.js$/ # TODO: directly augment backbone instead to avoid load order crap
+          context.require_asset('x-ray.js')
         elsif path =~ /\.(jst|hamlc)(\.|$)/
-          Xray.augment_template(data, path)
-        else
-          data
+          data = Xray.augment_template(data, path)
         end
+        data
       end
 
-      # Move our preprocessor in front of Sprocket's directive processor.
-      # FIXME: this sucks, but there's no public API - it's either this or alias_method_chain.
-      app.assets.instance_variable_get(:@preprocessors)['application/javascript'].tap do |procs|
-        procs.unshift procs.delete_at(procs.count-1)
+      app.assets.register_preprocessor 'text/css', :xray_css do |context, data|
+        path = context.pathname.to_s
+        if path.starts_with?(APP_CSS_PATH)
+          context.require_asset('xray.css')
+        end
+        data
       end
 
       # Augment templates
@@ -103,6 +97,27 @@ module Xray
           Xray.augment_template(source, path)
         end
         alias_method_chain :render, :xray
+      end
+
+      ActiveSupport::Notifications.subscribe('start_processing.action_controller') do |*args|
+        event           = ActiveSupport::Notifications::Event.new(*args)
+        controller_name = event.payload[:controller]
+        action_name     = event.payload[:action]
+        path            = ActiveSupport::Dependencies.search_for_file(controller_name.underscore)
+        Xray.request_info.clear
+        Xray.request_info[:controller] = {
+          :path   => path,
+          :name   => controller_name,
+          :action => action_name
+        }
+      end
+
+      ActiveSupport::Notifications.subscribe('render_template.action_view') do |*args|
+        event = ActiveSupport::Notifications::Event.new(*args)
+        Xray.request_info[:view] = {
+          :path   => event.payload[:identifier],
+          :layout => event.payload[:layout]
+        }
       end
     end
   end

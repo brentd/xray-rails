@@ -18,7 +18,6 @@
 
 window.Xray = {}
 
-
 bm = (name, fn) ->
   time = new Date
   result = fn()
@@ -47,7 +46,7 @@ Xray.specimens = ->
 
 Xray.constructorInfo = (constructor) ->
   for own info, func of window.XrayData
-    return info if func is constructor
+    return info if func == constructor
   null
 
 # Scans the document for templates, creating Xray.specimens for them.
@@ -91,6 +90,7 @@ Xray.show = ->
 Xray.hide = ->
   Xray.Overlay.instance().hide()
 
+
 # Wraps a DOM element that Xray is tracking
 class Xray.Specimen
   @add: (el, attrs = {}) ->
@@ -123,6 +123,13 @@ class Xray.Specimen
       left   : bbox.left
       width  : bbox.width
       height : bbox.height
+    # If the element is fixed, override its document position and inherit its
+    # CSS position.
+    if @$contents.css('position') == 'fixed'
+      @$box.css
+        position : 'fixed'
+        top      : @$contents.css('top')
+        left     : @$contents.css('left')
     @$box.click =>
       console.log "Opening #{@path}"
       console.log @$contents
@@ -135,13 +142,21 @@ class Xray.Specimen
 
   _computeBoundingBox: (contents = @$contents) ->
     @bbox = {}
+    # Edge case: the container may not wrap its children, for example if they
+    # are floated and no clearfix is present.
     if contents.length == 1 and contents.height() <= 0
       return @_computeBoundingBox(contents.children())
+
     boxFrame =
       top    : Number.MAX_VALUE
       left   : Number.MAX_VALUE
       right  : 0
       bottom : 0
+
+    # `contents` is a jQuery object that normally is wrapping one parent
+    # element, but occassionally we're wrapping multiple sibling elements
+    # (think about a partial with no direct container), so we iterate here
+    # just in case.
     for el in contents
       $el = $(el)
       continue unless $el.is(':visible')
@@ -159,6 +174,7 @@ class Xray.Specimen
       height : boxFrame.bottom - boxFrame.top
     return @bbox
 
+
 class Xray.ViewSpecimen extends Xray.Specimen
   @all = []
 
@@ -168,6 +184,7 @@ class Xray.ViewSpecimen extends Xray.Specimen
       handles.append(super).append(@template.makeLabel())
     else
       super
+
 
 class Xray.TemplateSpecimen extends Xray.Specimen
   @all = []
@@ -187,11 +204,9 @@ class Xray.Overlay
   constructor: ->
     @$overlay = $('<div id="xray-overlay">')
     @$overlay.click => @hide()
-    @$style = $('<link rel="stylesheet" href="<%= asset_path("xray.css") %>">')
 
   show: -> bm "show", =>
     Xray.isShowing = true
-    $('head').append @$style
     $('body').append @$overlay
     @shownBoxes = []
     Xray.addTemplates()
@@ -205,9 +220,13 @@ class Xray.Overlay
   hide: ->
     Xray.isShowing = false
     @$overlay.detach()
-    @$style.remove()
     $box.remove() for $box in @shownBoxes
     @shownBoxes = []
+
+
+class Xray.DevBar
+  initialize: ->
+    @$el = $('<div id="xray-dev-bar"></div>')
 
 
 # Initialize on DOM ready.
