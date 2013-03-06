@@ -216,6 +216,11 @@ class Xray.Bar
   constructor: ->
     @$el = $('#xray-bar')
     @$el.css(zIndex: 2147483647)
+    @$settings = @$el.find("#xray-settings")
     @$el.find('.xray-bar-btn:not([data-path=""])').click -> Xray.open($(this).attr('data-path'))
+    @$el.find('.xray-bar-btn-settings').click @toggleSettings
+
+  toggleSettings: =>
+    @$settings.show()
 
 Xray.init()

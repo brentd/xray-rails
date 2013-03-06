@@ -63,6 +63,8 @@
   height: 40px;
   padding: 0 8px;
   background: #222;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 200;
   color: #fff;
   z-index: 10000;
   box-shadow: 0 -1px 0 rgba(255,255,255,0.1);
@@ -72,8 +74,6 @@
 #xray-bar .xray-bar-btn {
   position: relative;
   color: #fff;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: 200;
   margin: 8px 0;
   height: 24px;
   line-height: 24px;
@@ -117,6 +117,56 @@
   transform: rotate(45deg);
   background-image: -webkit-linear-gradient(-45deg, rgba(0,0,0,0.2), rgba(0,0,0,0));
   background-image: -moz-linear-gradient(-45deg, rgba(0,0,0,0.2), rgba(0,0,0,0));
+}
+
+#xray-bar .xray-bar-settings-btn {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  color: #666;
+  cursor: pointer;
+  text-shadow: 0 1px 0 #000;
+  font-size: 16px;
+}
+
+#xray-bar .xray-bar-settings-btn:hover {
+  color: #fff;
+}
+
+#xray-settings {
+  position: absolute;
+  /*top: -70px;*/
+  right: 0;
+  background: rgba(0,0,0,0.9);
+  padding: 10px;
+  font-size: 14px
+}
+
+#xray-settings label {
+  display: inline;
+  margin: 2px 10px;
+  padding: 0;
+}
+
+#xray-settings input {
+  padding: 5px;
+  display: inline;
+  background: #333;
+  border: 1px solid #666;
+  color: #fff;
+  width: 200px;
+  margin: 0;
+  font-size: 13px;
+  line-height: 13px;
+  border-radius: 3px;
+  vertical-align: middle;
+}
+
+#xray-settings p {
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+  margin: 10px 0 0 0;
 }
 
 #xray-bar .xray-bar-controller { padding-left: 6px; }
