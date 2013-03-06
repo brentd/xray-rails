@@ -31,3 +31,13 @@ Restart your app, open your browser, and press `cmd+ctrl+x` to see the overlay.
 * A middleware inserts `xray.js`, `xray.css`, and the Xray bar to all successful HTML response bodies.
 * When the overlay is shown, `xray.js` examines the augmented file path information inserted during asset compilation.
 * Another middleware piggybacks the Rails server to respond to requests to open file paths with the user's desired editor.
+
+### TODO:
+
+  * Finish settings panel where editor can be changed; currently hardcoded to `/usr/local/bin/subl`
+  * Better handle overlapping views in overlay
+  * Allow Xray bar to be hidden when overlay is not shown
+  * Add buttons to Xray bar to trigger the overlay for templates and Backbone views
+  * Visualize major CSS components
+  * Jump to correct line number in editor
+  
