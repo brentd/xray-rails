@@ -1,3 +1,33 @@
-X-ray is the missing link between browser and editor. Visualize your Backbone views and Rails templates in an overlay, and click them to open up their respective files in your editor.
+# Xray
 
-This is in proof-of-concept stage. It does appear to be a workable idea.
+### Reveal the structure of your UI.
+
+The dev tools available to web developers in modern browsers are great. Many of us can't remember what life was like before "Inspect Element". But what we see in the compiled output sent to our browser is often the wrong level of detail - what about being able to visualize the higher level components of your UI? Controllers, templates, partials, Backbone views, etc. On top of that, why in 2013 can I not click something in the browser and have the code revealed in my editor of choice?
+
+Xray is the missing link between the browser and your app code.
+
+**Disclaimer:** Xray is in early stages and currently supports only Rails 3.1+ with use of the asset pipeline as a requirement.
+
+### Installation
+
+Add to your Gemfile:
+
+```ruby
+gem 'xray-rails'
+```
+
+Then run bundle and delete your cached assets:
+
+```
+$ bundle && rm -rf tmp/cache/assets
+```
+
+Restart your app, open your browser, and press `cmd+ctrl+x` to see the overlay.
+
+### How this works
+
+* During asset compilation, JS files and templates are augmented to contain file path information.
+* On each request, a bit of information is gathered and put into `Xray.request_info` to be used by the dev bar.
+* A middleware inserts `xray.js`, `xray.css`, and the Xray bar to all successful HTML response bodies.
+* When the overlay is shown, `xray.js` examines the augmented file path information inserted during asset compilation.
+* Another middleware piggybacks the Rails server to respond to requests to open file paths with the user's desired editor.
