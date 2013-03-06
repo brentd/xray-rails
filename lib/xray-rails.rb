@@ -2,7 +2,7 @@ require "xray/version"
 require "open3"
 
 module Xray
-  CONSTRUCTOR_REGEX = /^([\s]*)(?!_)([\w\.]+)\s*\=\s*(\(function\(_super\)|(?!jQuery|_)[\w\.]+.extend\()/
+  CONSTRUCTOR_REGEX = /^( *)(?!_)([\w\.]+) *= *(\(function\(_super\)|(?!jQuery|_)[\w\.]+.extend\()/
 
   def self.request_info
     @request_info ||= {}
@@ -12,7 +12,7 @@ module Xray
     source.gsub(CONSTRUCTOR_REGEX) do
       space, class_name, func = $1, $2, $3
       info = {name: class_name, path: path.to_s}
-      xray = "(window.XrayData||(window.XrayData={}))['#{info.to_json}']"
+      xray = "(window.XrayPaths||(window.XrayPaths={}))['#{info.to_json}']"
       "#{space}#{class_name} = #{xray} = #{func}"
     end
   end
@@ -46,8 +46,49 @@ module Xray
         end
         res.finish
       else
-        @app.call(env)
+        status, headers, response = @app.call(env)
+        return [status, headers, response] if file?(headers) || empty?(response)
+
+        if status == 200 && !response.body.frozen? && html_request?(headers, response)
+          body = response.body.sub(/<body.*>/) { "#{$~}\n#{xray_content}" }
+          append_js!(body, 'jquery', :xray)
+          append_js!(body, 'backbone', :'xray-backbone')
+          headers['Content-Length'] = body.bytesize.to_s
+        end
+        [status, headers, body ? [body] : response]
       end
+    end
+
+    private
+
+    def xray_content
+      ActionController::Base.new.render_to_string(:partial => 'shared/xray_bar').html_safe
+    end
+
+    def append_js!(html, after_script_name, script_name)
+      html.sub!(/<script.+#{after_script_name}([-.]{1}[\d\.]+)?([-.]{1}min)?\.js.+><\/script>/) do
+        "#{$~}\n" + ActionController::Base.helpers.javascript_include_tag(script_name)
+      end
+    end
+
+    def js(name)
+      ActionController::Base.helpers.javascript_include_tag(name)
+    end
+
+    # fix issue if response's body is a Proc
+    def empty?(response)
+      # response may be ["Not Found"], ["Move Permanently"], etc.
+      (response.is_a?(Array) && response.size <= 1) ||
+        !response.respond_to?(:body) || response.body.empty?
+    end
+
+    # if send file?
+    def file?(headers)
+      headers["Content-Transfer-Encoding"] == "binary"
+    end
+
+    def html_request?(headers, response)
+      headers['Content-Type'] && headers['Content-Type'].include?('text/html') && response.body.include?("<html")
     end
   end
 
@@ -62,31 +103,11 @@ module Xray
         path = context.pathname.to_s
         if path =~ /\.(js|coffee)(\.|$)/
           Xray.augment_js(data, path)
+        elsif path =~ /\.(jst|hamlc)(\.|$)/
+          Xray.augment_template(data, path)
         else
           data
         end
-      end
-
-      # TODO: How can I not hardcode these?
-      APP_JS_PATH  = "#{app.root}/app/assets/javascripts/application."
-      APP_CSS_PATH = "#{app.root}/app/assets/stylesheets/application."
-
-      app.assets.register_preprocessor 'application/javascript', :xray do |context, data|
-        path = context.pathname.to_s
-        if path =~ /\/backbone\.js$/ # TODO: directly augment backbone instead to avoid load order crap
-          context.require_asset('xray.js')
-        elsif path =~ /\.(jst|hamlc)(\.|$)/
-          data = Xray.augment_template(data, path)
-        end
-        data
-      end
-
-      app.assets.register_preprocessor 'text/css', :xray_css do |context, data|
-        path = context.pathname.to_s
-        if path.starts_with?(APP_CSS_PATH)
-          context.require_asset('xray.css')
-        end
-        data
       end
 
       # Augment templates
