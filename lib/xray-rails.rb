@@ -62,7 +62,7 @@ module Xray
     private
 
     def xray_content
-      ActionController::Base.new.render_to_string(:partial => 'shared/xray_bar').html_safe
+      ActionController::Base.new.render_to_string(:partial => '/xray_bar').html_safe
     end
 
     def append_js!(html, after_script_name, script_name)
@@ -94,6 +94,7 @@ module Xray
 
   class Engine < ::Rails::Engine
     paths['app/assets'] = 'lib/assets'
+    paths['app/views'] = 'lib/xray/views'
 
     initializer "xray.initialize" do |app|
       app.middleware.use Xray::Middleware

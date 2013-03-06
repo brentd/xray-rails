@@ -1,0 +1,29 @@
+
+<!-- XRAY -->
+
+<div id="xray-bar">
+  <div class="xray-bar-controller-path">
+    <span class="xray-bar-btn xray-bar-controller xray-icon-flash" data-path="<%= Xray.request_info[:controller][:path] %>">
+      <b></b>
+      <%= Xray.request_info[:controller][:name] %><span class="xray-bar-controller-action">#<%= Xray.request_info[:controller][:action] %></span>
+    </span>
+    <% layout_path = lookup_context.find(Xray.request_info[:view][:layout]).identifier %>
+    <span class="xray-bar-btn xray-bar-layout xray-icon-columns" data-path="<%= layout_path %>">
+      <b></b>
+      <%= Xray.request_info[:view][:layout].split('/').last %>
+    </span>
+    <span class="xray-bar-btn xray-bar-view xray-icon-doc" data-path="<%= Xray.request_info[:view][:path] %>">
+      <b></b>
+      <%= Xray.request_info[:view][:path].split('/').last %>
+    </span>
+  </div>
+  <span class="xray-bar-settings-btn xray-icon-cog"></span>
+  <div id="xray-settings" style="display:none">
+    <label for="xray-editor-input">Editor</label>
+    <input id="xray-editor-input" type="text">
+    <p>Settings are saved to ~/.xrayconfig</p>
+  </div>
+</div>
+<%= stylesheet_link_tag :xray %>
+
+<!-- /XRAY -->

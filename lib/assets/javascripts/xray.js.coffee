@@ -20,9 +20,9 @@ Xray.init = ->
     if Xray.isShowing and e.keyCode is 27 # esc
       Xray.hide()
 
-  new Xray.Bar(el) for el in $('#xray-bar')
+  $ -> new Xray.Bar(el) for el in $('#xray-bar')
 
-  console.log "Ready to Xray."
+  console.log "Ready to Xray. Press cmd+ctrl+x to scan your UI."
 
 Xray.specimens = ->
   Xray.ViewSpecimen.all.concat Xray.TemplateSpecimen.all
@@ -213,12 +213,12 @@ class Xray.Overlay
 
 
 class Xray.Bar
-  constructor: ->
-    @$el = $('#xray-bar')
+  constructor: (el) ->
+    @$el = $(el)
     @$el.css(zIndex: 2147483647)
     @$settings = @$el.find("#xray-settings")
     @$el.find('.xray-bar-btn:not([data-path=""])').click -> Xray.open($(this).attr('data-path'))
-    @$el.find('.xray-bar-btn-settings').click @toggleSettings
+    # @$el.find('.xray-bar-btn-settings').click @toggleSettings
 
   toggleSettings: =>
     @$settings.show()
