@@ -20,9 +20,9 @@ Xray.init = ->
     if Xray.isShowing and e.keyCode is 27 # esc
       Xray.hide()
 
-  $ -> new Xray.Bar(el) for el in $('#xray-bar')
-
-  console.log "Ready to Xray. Press cmd+ctrl+x to scan your UI."
+  $ ->
+    new Xray.Overlay
+    Xray.findTemplates()
 
 Xray.specimens = ->
   Xray.ViewSpecimen.all.concat Xray.TemplateSpecimen.all
@@ -34,8 +34,7 @@ Xray.constructorInfo = (constructor) ->
   null
 
 # Scans the document for templates, creating Xray.TemplateSpecimens for them.
-Xray.addTemplates = -> bm 'addTemplates', ->
-  Xray.TemplateSpecimen.reset()
+Xray.findTemplates = -> bm 'addTemplates', ->
   # Find all <!-- XRAY START ... --> comments
   comments = $('*:not(iframe,script)').contents().filter ->
     this.nodeType == 8 and this.data[0..10] == " XRAY START"
@@ -49,17 +48,13 @@ Xray.addTemplates = -> bm 'addTemplates', ->
       if el.nodeType == 1 and el.tagName != 'SCRIPT'
         $templateContents.push el
       el = el.nextSibling
+    # Remove XRAY's template comments from the DOM.
+    el.parentNode.removeChild(el) if el?.nodeType == 8
+    comment.parentNode.removeChild(comment)
+    # Add the template specimen
     Xray.TemplateSpecimen.add $templateContents,
       name: path.split('/').slice(-1)[0]
       path: path
-
-Xray.addViews = -> bm 'addViews', ->
-  return unless window.XrayViews
-  Xray.ViewSpecimen.reset()
-  for view in window.XrayViews
-    el = view.el
-    if info = Xray.constructorInfo(view.constructor)
-      Xray.ViewSpecimen.add el, info
 
 # Open the given filesystem path by calling out to Xray's server.
 Xray.open = (path) ->
@@ -67,13 +62,9 @@ Xray.open = (path) ->
     url: "/xray/open?path=#{path}"
     dataType: 'script'
 
-Xray.removeView = (element) ->
-  XrayViews.
-  Xray.ViewSpecimen.remove(element)
-
 # Show the Xray overlay
-Xray.show = ->
-  Xray.Overlay.instance().show()
+Xray.show = (type = null) ->
+  Xray.Overlay.instance().show(type)
 
 # Hide the Xray overlay
 Xray.hide = ->
@@ -188,39 +179,57 @@ class Xray.Overlay
     @singletonInstance ||= new this
 
   constructor: ->
+    Xray.Overlay.singletonInstance = this
+    @bar = new Xray.Bar($('#xray-bar'))
+    @shownBoxes = []
     @$overlay = $('<div id="xray-overlay">')
     @$overlay.click => @hide()
 
-  show: ->
+  show: (type = null) ->
+    @reset()
     Xray.isShowing = true
-    Xray.addTemplates()
-    Xray.addViews()
-    $('body').append @$overlay
-    @shownBoxes = []
     bm 'show', =>
-      for element in Xray.specimens()
+      $('body').append @$overlay unless @$overlay.is(':visible')
+      switch type
+        when null
+          Xray.findTemplates()
+          specimens = Xray.specimens()
+        when 'templates'
+          Xray.findTemplates()
+          specimens = Xray.TemplateSpecimen.all
+        when 'views'
+          specimens = Xray.ViewSpecimen.all
+      for element in specimens
         continue unless element.isVisible()
         element.makeBox()
         element.$box.css(zIndex: Math.ceil((10000 + element.bbox.top + element.bbox.left)))
-        @shownBoxes.push element.$box
+        @shownBoxes .push element.$box
         $('body').append element.$box
+
+  reset: ->
+    $box.remove() for $box in @shownBoxes
+    @shownBoxes = []
 
   hide: ->
     Xray.isShowing = false
     @$overlay.detach()
-    $box.remove() for $box in @shownBoxes
-    @shownBoxes = []
+    @reset()
 
 
 class Xray.Bar
   constructor: (el) ->
-    @$el = $(el)
+    @$el = $(el
     @$el.css(zIndex: 2147483647)
+    @$el.find('#xray-bar-controller-path .xray-bar-btn').click ->
+      Xray.open($(this).attr('data-path'))
+    @$el.find('.xray-bar-all-toggler').click       -> Xray.show()
+    @$el.find('.xray-bar-templates-toggler').click -> Xray.show('templates')
+    @$el.find('.xray-bar-views-toggler').click     -> Xray.show('views')
     @$settings = @$el.find("#xray-settings")
-    @$el.find('.xray-bar-btn:not([data-path=""])').click -> Xray.open($(this).attr('data-path'))
     # @$el.find('.xray-bar-btn-settings').click @toggleSettings
 
   toggleSettings: =>
     @$settings.show()
+
 
 Xray.init()

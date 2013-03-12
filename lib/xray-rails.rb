@@ -104,9 +104,9 @@ if defined?(Rails) && Rails.env.development?
         # Augment JS files, including compiled coffeescript
         app.assets.register_postprocessor 'application/javascript', :xray do |context, data|
           path = context.pathname.to_s
-          if path =~ /\.(js|coffee)(\.|$)/
+          if path =~ /^#{app.root}.+\.(js|coffee)(\.|$)/
             Xray.augment_js(data, path)
-          elsif path =~ /\.(jst|hamlc)(\.|$)/
+          elsif path =~ /^#{app.root}.+\.(jst|hamlc)(\.|$)/
             Xray.augment_template(data, path)
           else
             data
@@ -118,7 +118,7 @@ if defined?(Rails) && Rails.env.development?
           def render_with_xray(*args, &block)
             path = identifier
             source = render_without_xray(*args, &block)
-            if path !~ /xray_bar\./
+            if path !~ /xray_bar\.html/
               Xray.augment_template(source, path)
             else
               source
