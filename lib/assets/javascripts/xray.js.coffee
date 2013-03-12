@@ -218,15 +218,13 @@ class Xray.Overlay
 
 class Xray.Bar
   constructor: (el) ->
-    @$el = $(el
+    @$el = $(el)
     @$el.css(zIndex: 2147483647)
     @$el.find('#xray-bar-controller-path .xray-bar-btn').click ->
       Xray.open($(this).attr('data-path'))
     @$el.find('.xray-bar-all-toggler').click       -> Xray.show()
     @$el.find('.xray-bar-templates-toggler').click -> Xray.show('templates')
     @$el.find('.xray-bar-views-toggler').click     -> Xray.show('views')
-    @$settings = @$el.find("#xray-settings")
-    # @$el.find('.xray-bar-btn-settings').click @toggleSettings
 
   toggleSettings: =>
     @$settings.show()
