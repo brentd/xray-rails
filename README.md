@@ -37,7 +37,7 @@ Restart your app, open your browser, and press `cmd+ctrl+x` to see the overlay.
   * Finish settings panel where editor can be changed; currently hardcoded to `/usr/local/bin/subl`
   * Better handle overlapping views in overlay
   * Allow Xray bar to be hidden when overlay is not shown
-  * Add buttons to Xray bar to trigger the overlay for templates and Backbone views
+  * ~~Add buttons to Xray bar to trigger the overlay for templates and Backbone views~~
   * Visualize major CSS components
   * Jump to correct line number in editor
   
