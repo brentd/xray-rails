@@ -13,7 +13,7 @@ Xray is the missing link between the browser and your app code.
 Add to your Gemfile:
 
 ```ruby
-gem 'xray-rails'
+gem 'xray-rails', github: 'brentd/xray-rails'
 ```
 
 Then run bundle and delete your cached assets:
