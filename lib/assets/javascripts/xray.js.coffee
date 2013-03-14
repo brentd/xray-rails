@@ -4,7 +4,7 @@ return unless $ = window.jQuery
 bm = (name, fn) ->
   time = new Date
   result = fn()
-  console.log "#{name} : #{new Date() - time}ms"
+  # console.log "#{name} : #{new Date() - time}ms"
   result
 
 # Initialize Xray - hook into Backbone.View to create Xray.specimens as the views
@@ -12,6 +12,8 @@ bm = (name, fn) ->
 Xray.init = ->
   return if Xray.initialized
   Xray.initialized = true
+
+  console?.log "Ready to Xray. Press cmd+ctrl+x to scan your UI."
 
   # Register keyboard shortcuts
   $(document).keydown (e) ->
@@ -189,16 +191,18 @@ class Xray.Overlay
     @reset()
     Xray.isShowing = true
     bm 'show', =>
-      $('body').append @$overlay unless @$overlay.is(':visible')
+      unless @$overlay.is(':visible')
+        $('body').append @$overlay
+        @bar.show()
       switch type
-        when null
-          Xray.findTemplates()
-          specimens = Xray.specimens()
         when 'templates'
           Xray.findTemplates()
           specimens = Xray.TemplateSpecimen.all
         when 'views'
           specimens = Xray.ViewSpecimen.all
+        else
+          Xray.findTemplates()
+          specimens = Xray.specimens()
       for element in specimens
         continue unless element.isVisible()
         element.makeBox()
@@ -214,6 +218,7 @@ class Xray.Overlay
     Xray.isShowing = false
     @$overlay.detach()
     @reset()
+    @bar.hide()
 
 
 class Xray.Bar
@@ -225,6 +230,16 @@ class Xray.Bar
     @$el.find('.xray-bar-all-toggler').click       -> Xray.show()
     @$el.find('.xray-bar-templates-toggler').click -> Xray.show('templates')
     @$el.find('.xray-bar-views-toggler').click     -> Xray.show('views')
+
+  show: ->
+    @$el.show()
+    @originalPadding = parseInt $('html').css('padding-bottom')
+    if @originalPadding < 40
+      $('html').css paddingBottom: 40
+
+  hide: ->
+    @$el.hide()
+    $('html').css paddingBottom: @originalPadding
 
   toggleSettings: =>
     @$settings.show()
