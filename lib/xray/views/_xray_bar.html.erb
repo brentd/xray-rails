@@ -4,18 +4,22 @@
 <div id="xray-bar">
   <% if Xray.request_info.present? %>
     <div id="xray-bar-controller-path">
-      <span class="xray-bar-btn xray-bar-controller xray-icon-flash" data-path="<%= Xray.request_info[:controller][:path] %>">
-        <b></b>
-        <%= Xray.request_info[:controller][:name] %><span class="xray-bar-controller-action">#<%= Xray.request_info[:controller][:action] %></span>
-      </span>
-      <% layout_path = lookup_context.find(Xray.request_info[:view][:layout]).identifier %>
-      <span class="xray-bar-btn xray-bar-layout xray-icon-columns" data-path="<%= layout_path %>">
-        <b></b>
-        <%= Xray.request_info[:view][:layout].split('/').last %>
-      </span>
-      <span class="xray-bar-btn xray-bar-view xray-icon-doc" data-path="<%= Xray.request_info[:view][:path] %>">
-        <%= Xray.request_info[:view][:path].split('/').last %>
-      </span>
+      <% if Xray.request_info[:controller] %>
+        <span class="xray-bar-btn xray-bar-controller xray-icon-flash" data-path="<%= Xray.request_info[:controller][:path] %>">
+          <b></b>
+          <%= Xray.request_info[:controller][:name] %><span class="xray-bar-controller-action">#<%= Xray.request_info[:controller][:action] %></span>
+        </span>
+      <% end %>
+      <% if Xray.request_info[:view] %>
+        <% layout_path = lookup_context.find(Xray.request_info[:view][:layout]).identifier %>
+        <span class="xray-bar-btn xray-bar-layout xray-icon-columns" data-path="<%= layout_path %>">
+          <b></b>
+          <%= Xray.request_info[:view][:layout].split('/').last %>
+        </span>
+        <span class="xray-bar-btn xray-bar-view xray-icon-doc" data-path="<%= Xray.request_info[:view][:path] %>">
+          <%= Xray.request_info[:view][:path].split('/').last %>
+        </span>
+      <% end %>
     </div>
   <% end %>
   <div id="xray-bar-togglers">
