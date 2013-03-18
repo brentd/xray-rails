@@ -126,7 +126,7 @@ if defined?(Rails) && Rails.env.development?
           def render_with_xray(*args, &block)
             path = identifier
             source = render_without_xray(*args, &block)
-            if path !~ /xray_bar\.html/
+            if path =~ /^#{Rails.application.root}.+\.(html|slim|haml)(\.|$)/
               Xray.augment_template(source, path)
             else
               source
@@ -150,11 +150,15 @@ if defined?(Rails) && Rails.env.development?
 
         ActiveSupport::Notifications.subscribe('render_template.action_view') do |*args|
           event = ActiveSupport::Notifications::Event.new(*args)
-          Xray.request_info[:view] = {
-            :path   => event.payload[:identifier],
-            :layout => event.payload[:layout]
-          }
+          # We are only interested in the first notification that has a layout.
+          if layout = event.payload[:layout]
+            Xray.request_info[:view] ||= {
+              :path   => event.payload[:identifier],
+              :layout => layout
+            }
+          end
         end
+
       end
     end
   end
