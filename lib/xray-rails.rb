@@ -52,7 +52,7 @@ if defined?(Rails) && Rails.env.development?
           return [status, headers, response] if file?(headers) || empty?(response)
 
           if status == 200 && !response.body.frozen? && html_request?(headers, response)
-            body = response.body.sub(/<body.*>/) { "#{$~}\n#{xray_content}" }
+            body = response.body.sub(/<body[^>]*>/) { "#{$~}\n#{xray_content}" }
             append_js!(body, 'jquery', :xray)
             append_js!(body, 'backbone', :'xray-backbone')
             headers['Content-Length'] = body.bytesize.to_s
