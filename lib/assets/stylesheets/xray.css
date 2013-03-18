@@ -1,13 +1,7 @@
 @charset "UTF-8";
 
-@-webkit-keyframes fade-in {
-  0%   { opacity: 0; }
-  100% { opacity: 1; }
-}
-
 #xray-overlay {
   position: fixed; left: 0; top: 0; bottom: 0; right: 0;
-  -webkit-animation: fade-in 0.1s ease-out;
   background: rgba(0,0,0,0.7);
   background: -webkit-radial-gradient(center, ellipse cover, rgba(0,0,0,0.4) 10%, rgba(0,0,0,0.8) 100%);
   z-index: 9000;
@@ -15,7 +9,6 @@
 
 .xray-specimen {
   position: absolute;
-  -webkit-animation: fade-in 0.05s ease-out;
   background: rgba(255,255,255,0.15);
   outline: 1px solid rgba(255,255,255,0.8);
   outline-offset: -1px;
