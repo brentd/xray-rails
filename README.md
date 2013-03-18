@@ -10,13 +10,16 @@ Xray is the missing link between the browser and your app code.
 
 ### Installation
 
-Add to your Gemfile:
+Add to your Gemfile, preferably under your development group:
 
 ```ruby
-gem 'xray-rails', github: 'brentd/xray-rails'
+group :development do
+  ...
+  gem 'xray-rails', github: 'brentd/xray-rails'
+end
 ```
 
-Then run bundle and delete your cached assets:
+Then bundle and delete your cached assets:
 
 ```
 $ bundle && rm -rf tmp/cache/assets
