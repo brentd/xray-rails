@@ -106,14 +106,22 @@ if defined?(Rails) && Rails.env.development?
           path = context.pathname.to_s
           if path =~ /^#{app.root}.+\.(js|coffee)(\.|$)/
             Xray.augment_js(data, path)
-          elsif path =~ /^#{app.root}.+\.(jst|hamlc)(\.|$)/
-            Xray.augment_template(data, path)
           else
             data
           end
         end
 
-        # Augment templates
+        # Augment JS templates
+        # app.assets.register_preprocessor 'application/javascript', :xray do |context, source|
+        #   path = context.pathname.to_s
+        #   if path =~ /^#{app.root}.+\.(jst)(\.|$)/
+        #     Xray.augment_template(source, path)
+        #   else
+        #     source
+        #   end
+        # end
+
+        # Augment server-side templates
         ActionView::Template.class_eval do
           def render_with_xray(*args, &block)
             path = identifier
