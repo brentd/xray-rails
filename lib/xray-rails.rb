@@ -41,7 +41,11 @@ module Xray
   #   MyView = Backbone.View.extend({ ...
   #
   # Becomes:
-  #   MyView = (window.XrayPaths||(window.XrayPaths={}))['{"name":"MyView","path":"path/to/file.js"}'] = MyView = Backbone.View.extend({ ...
+  #   MyView = (window.XrayPaths||(window.XrayPaths={}))['{"name":"MyView","path":"/path/to/file.js"}'] = Backbone.View.extend({ ...
+  #
+  # A goal here was to not add any new lines to the source so as not to throw
+  # off line numbers if an exception is thrown, hence the odd pattern of
+  # abusing an object set operation in a multiple assignment.
   #
   # TODO: This is simple and gets the job done, but is a bit ridiculous.
   #       I've also seen this appear in stack traces :( Would love to find a
