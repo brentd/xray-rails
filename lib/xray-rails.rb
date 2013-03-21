@@ -6,14 +6,20 @@ if defined?(Rails) && Rails.env.development?
 end
 
 module Xray
+  # Used to collect request information during each request cycle for use in
+  # the Xray bar.
+  # TODO: there's nothing thread-safe about this. Not sure how big of a deal that is.
   def self.request_info
     @request_info ||= {}
   end
 
-  # The kinds of constructors Xray is interested in knowing the filepath of.
+  # Patterns for the kind of JS constructors Xray is interested in knowing the
+  # filepath of. Unforunately, these patterns will result in a lot of false
+  # positives, because we can't only match direct Backbone.View subclasses -
+  # the app's JS may have a more complex class hierarchy than that.
   CONSTRUCTOR_PATTERNS = [
-    'Backbone.View.extend\({',                      # Vanilla JS Backbone view
-    '\(function\(_super\) {.*}\)\(Backbone\.View\)' # Coffeescript-generated constructor
+    '(?!jQuery|_)\.extend\({', # Match uses of extend(), excluding jQuery and underscore
+    '\(function\(_super\) {'   # Coffeescript-generated constructors
   ]
 
   # Example matches:
