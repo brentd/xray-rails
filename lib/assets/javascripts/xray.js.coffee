@@ -1,18 +1,11 @@
 window.Xray = {}
 return unless $ = window.jQuery
 
-# Benchmark a piece of code
-bm = (name, fn) ->
-  time = new Date
-  result = fn()
-  # console.log "#{name} : #{new Date() - time}ms"
-  result
-
 # Max CSS z-index. The overlay and xray bar use this.
 MAX_ZINDEX = 2147483647
 
-# Initialize Xray
-Xray.init = ->
+# Initialize Xray. Called immediately, but some setup is deferred until DOM ready.
+Xray.init = do ->
   return if Xray.initialized
   Xray.initialized = true
 
@@ -23,7 +16,6 @@ Xray.init = ->
     if Xray.isShowing and e.keyCode is 27 # esc
       Xray.hide()
 
-  # Finish setup after the DOM is ready.
   $ ->
     # Instantiate the overlay singleton.
     new Xray.Overlay
@@ -44,7 +36,7 @@ Xray.constructorInfo = (constructor) ->
   null
 
 # Scans the document for templates, creating Xray.TemplateSpecimens for them.
-Xray.findTemplates = -> bm 'addTemplates', ->
+Xray.findTemplates = -> util.bm 'addTemplates', ->
   # Find all <!-- XRAY START ... --> comments
   comments = $('*:not(iframe,script)').contents().filter ->
     this.nodeType == 8 and this.data[0..9] == "XRAY START"
@@ -82,8 +74,8 @@ Xray.hide = ->
 # Wraps a DOM element that Xray is tracking. This is subclassed by
 # Xray.TemplateSpecimen and Xray.ViewSpecimen.
 class Xray.Specimen
-  @add: (el, attrs = {}) ->
-    @all.push new this(el, attrs)
+  @add: (el, info = {}) ->
+    @all.push new this(el, info)
 
   @remove: (el) ->
     @find(el)?.remove()
@@ -97,11 +89,11 @@ class Xray.Specimen
   @reset: ->
     @all = []
 
-  constructor: (contents, attrs = {}) ->
+  constructor: (contents, info = {}) ->
     @el = if contents instanceof jQuery then contents[0] else contents
     @$contents = $(contents)
-    @name = attrs.name
-    @path = attrs.path
+    @name = info.name
+    @path = info.path
 
   remove: ->
     idx = @constructor.all.indexOf(this)
@@ -111,64 +103,25 @@ class Xray.Specimen
     @$contents.length and @$contents.is(':visible')
 
   makeBox: ->
-    bbox = @_computeBoundingBox()
-    @$box = $("<div class='xray-specimen #{@constructor.name}'>").css
-      top    : bbox.top
-      left   : bbox.left
-      width  : bbox.width
-      height : bbox.height
-    # If the element is fixed, inherit its position for the bounding box.
+    @bounds = util.computeBoundingBox(@$contents)
+    @$box = $("<div class='xray-specimen #{@constructor.name}'>").css(@bounds)
+
+    # If the element is fixed, override the computed position with the fixed one.
     if @$contents.css('position') == 'fixed'
       @$box.css
         position : 'fixed'
         top      : @$contents.css('top')
         left     : @$contents.css('left')
-    @$box.click =>
-      Xray.open @path
+
+    @$box.click => Xray.open @path
     @$box.append @makeLabel
 
   makeLabel: =>
-    $("<div class='xray-specimen-handle #{@constructor.name}'>").append(@name).click =>
-      Xray.open @path
-
-  _computeBoundingBox: ($contents = @$contents) ->
-    @bbox = {}
-
-    # Edge case: the container may not wrap its children, for example if they
-    # are floated and no clearfix is present.
-    if $contents.length == 1 and $contents.height() <= 0
-      return @_computeBoundingBox($contents.children())
-
-    boxFrame =
-      top    : Number.MAX_VALUE
-      left   : Number.MAX_VALUE
-      right  : 0
-      bottom : 0
-
-    # `$contents` is a jQuery object that normally wraps one parent element,
-    # but occassionally we're wrapping multiple sibling elements (think about
-    # a partial with no direct container element), so we iterate over it just
-    # in case.
-    for el in $contents
-      $el = $(el)
-      continue unless $el.is(':visible')
-      frame = $el.offset()
-      frame.right  = frame.left + $el.outerWidth()
-      frame.bottom = frame.top + $el.outerHeight()
-      boxFrame.top    = frame.top if frame.top < boxFrame.top
-      boxFrame.left   = frame.left if frame.left < boxFrame.left
-      boxFrame.right  = frame.right if frame.right > boxFrame.right
-      boxFrame.bottom = frame.bottom if frame.bottom > boxFrame.bottom
-    @bbox =
-      left   : boxFrame.left
-      top    : boxFrame.top
-      width  : boxFrame.right - boxFrame.left
-      height : boxFrame.bottom - boxFrame.top
-    return @bbox
+    $("<div class='xray-specimen-handle #{@constructor.name}'>").append(@name)
 
 
 # Wraps elements that constitute a Javascript "view" object, e.g.
-# Backbone.View
+# Backbone.View.
 class Xray.ViewSpecimen extends Xray.Specimen
   @all = []
 
@@ -181,7 +134,7 @@ class Xray.ViewSpecimen extends Xray.Specimen
 
 
 # Wraps elements that were rendered by a template, e.g. a Rails partial or
-# even a client-side rendered JS template.
+# a client-side rendered JS template.
 class Xray.TemplateSpecimen extends Xray.Specimen
   @all = []
 
@@ -201,7 +154,7 @@ class Xray.Overlay
   show: (type = null) ->
     @reset()
     Xray.isShowing = true
-    bm 'show', =>
+    util.bm 'show', =>
       unless @$overlay.is(':visible')
         $('body').append @$overlay
         @bar.show()
@@ -220,7 +173,7 @@ class Xray.Overlay
         # A cheap way to "order" the boxes, where boxes closer to the top
         # have a lower z-index than those positioned lower.
         element.$box.css
-          zIndex: Math.ceil(MAX_ZINDEX*0.9 + element.bbox.top + element.bbox.left)
+          zIndex: Math.ceil(MAX_ZINDEX*0.9 + element.bounds.top + element.bounds.left)
         @shownBoxes.push element.$box
         $('body').append element.$box
 
@@ -261,4 +214,43 @@ class Xray.Bar
     @$settings.show()
 
 
-Xray.init()
+# Utility methods.
+util =
+  # Computes the bounding box of a jQuery set, which may be many sibling
+  # elements with no parent in the set.
+  computeBoundingBox: ($contents) ->
+    # Edge case: the container may not physically wrap its children, for
+    # example if they are floated and no clearfix is present.
+    if $contents.length == 1 and $contents.height() <= 0
+      return util._computeBoundingBox($contents.children())
+
+    boxFrame =
+      top    : Number.POSITIVE_INFINITY
+      left   : Number.POSITIVE_INFINITY
+      right  : Number.NEGATIVE_INFINITY
+      bottom : Number.NEGATIVE_INFINITY
+
+    for el in $contents
+      $el = $(el)
+      continue unless $el.is(':visible')
+      frame = $el.offset()
+      frame.right  = frame.left + $el.outerWidth()
+      frame.bottom = frame.top + $el.outerHeight()
+      boxFrame.top    = frame.top if frame.top < boxFrame.top
+      boxFrame.left   = frame.left if frame.left < boxFrame.left
+      boxFrame.right  = frame.right if frame.right > boxFrame.right
+      boxFrame.bottom = frame.bottom if frame.bottom > boxFrame.bottom
+
+    return {
+      left   : boxFrame.left
+      top    : boxFrame.top
+      width  : boxFrame.right - boxFrame.left
+      height : boxFrame.bottom - boxFrame.top
+    }
+
+  # Benchmark a piece of code
+  bm: (name, fn) ->
+    time = new Date
+    result = fn()
+    # console.log "#{name} : #{new Date() - time}ms"
+    result
