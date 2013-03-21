@@ -247,4 +247,3 @@ util =
       width  : boxFrame.right - boxFrame.left
       height : boxFrame.bottom - boxFrame.top
     }
-
