@@ -1,3 +1,7 @@
+# Xray Backbone integration. This involves hooking into the lifecycle
+# of Backbone.View by monkey patching its prototype. Would love a cleaner
+# way of doing this, as nobody wants to this stuff in their stack traces.
+
 return unless window.Backbone && window.Xray
 
 # Wrap Backbone.View::_ensureElement to add the view to Xray once

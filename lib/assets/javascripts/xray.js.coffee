@@ -1,19 +1,20 @@
 window.Xray = {}
 return unless $ = window.jQuery
 
+# Benchmark a piece of code
 bm = (name, fn) ->
   time = new Date
   result = fn()
   # console.log "#{name} : #{new Date() - time}ms"
   result
 
-# Initialize Xray - hook into Backbone.View to create Xray.specimens as the views
-# are instantiated.
+# Max CSS z-index. The overlay and xray bar use this.
+MAX_ZINDEX = 2147483647
+
+# Initialize Xray
 Xray.init = ->
   return if Xray.initialized
   Xray.initialized = true
-
-  console?.log "Ready to Xray. Press cmd+ctrl+x to scan your UI."
 
   # Register keyboard shortcuts
   $(document).keydown (e) ->
@@ -22,13 +23,20 @@ Xray.init = ->
     if Xray.isShowing and e.keyCode is 27 # esc
       Xray.hide()
 
+  # Finish setup after the DOM is ready.
   $ ->
+    # Instantiate the overlay singleton.
     new Xray.Overlay
+    # Go ahead and do a pass on the DOM to find templates.
     Xray.findTemplates()
+    # Ready to rock.
+    console?.log "Ready to Xray. Press cmd+ctrl+x to scan your UI."
 
+# Returns all currently created Xray.Specimen objects.
 Xray.specimens = ->
   Xray.ViewSpecimen.all.concat Xray.TemplateSpecimen.all
 
+# Looks up the stored constructor info
 Xray.constructorInfo = (constructor) ->
   if window.XrayPaths
     for own info, func of window.XrayPaths
@@ -61,7 +69,7 @@ Xray.findTemplates = -> bm 'addTemplates', ->
 # Open the given filesystem path by calling out to Xray's server.
 Xray.open = (path) ->
   $.ajax
-    url: "/xray/open?path=#{path}"
+    url: "/_xray/open?path=#{path}"
     dataType: 'script'
 
 # Show the Xray overlay
@@ -72,7 +80,8 @@ Xray.show = (type = null) ->
 Xray.hide = ->
   Xray.Overlay.instance().hide()
 
-# Wraps a DOM element that Xray is tracking
+# Wraps a DOM element that Xray is tracking. This is subclassed by
+# Xray.TemplateSpecimen and Xray.ViewSpecimen.
 class Xray.Specimen
   @add: (el, attrs = {}) ->
     @all.push new this(el, attrs)
@@ -125,13 +134,13 @@ class Xray.Specimen
     $("<div class='xray-specimen-handle #{@constructor.name}'>").append(@name).click =>
       Xray.open @path
 
-  _computeBoundingBox: (contents = @$contents) ->
+  _computeBoundingBox: ($contents = @$contents) ->
     @bbox = {}
 
     # Edge case: the container may not wrap its children, for example if they
     # are floated and no clearfix is present.
-    if contents.length == 1 and contents.height() <= 0
-      return @_computeBoundingBox(contents.children())
+    if $contents.length == 1 and $contents.height() <= 0
+      return @_computeBoundingBox($contents.children())
 
     boxFrame =
       top    : Number.MAX_VALUE
@@ -139,10 +148,11 @@ class Xray.Specimen
       right  : 0
       bottom : 0
 
-    # `contents` is a jQuery object that normally wraps one parent element,
+    # `$contents` is a jQuery object that normally wraps one parent element,
     # but occassionally we're wrapping multiple sibling elements (think about
-    # a partial with no direct container element), so we iterate just in case.
-    for el in contents
+    # a partial with no direct container element), so we iterate over it just
+    # in case.
+    for el in $contents
       $el = $(el)
       continue unless $el.is(':visible')
       frame = $el.offset()
@@ -160,6 +170,8 @@ class Xray.Specimen
     return @bbox
 
 
+# Wraps elements that constitute a Javascript "view" object, e.g.
+# Backbone.View
 class Xray.ViewSpecimen extends Xray.Specimen
   @all = []
 
@@ -171,6 +183,8 @@ class Xray.ViewSpecimen extends Xray.Specimen
       super
 
 
+# Wraps elements that were rendered by a template, e.g. a Rails partial or
+# even a client-side rendered JS template.
 class Xray.TemplateSpecimen extends Xray.Specimen
   @all = []
 
@@ -221,10 +235,12 @@ class Xray.Overlay
     @bar.hide()
 
 
+# The Xray bar shows controller, action, and view information, and has
+# toggle buttons for showing the different types of specimens in the overlay.
 class Xray.Bar
   constructor: (el) ->
     @$el = $(el)
-    @$el.css(zIndex: 2147483647)
+    @$el.css(zIndex: MAX_ZINDEX)
     @$el.find('#xray-bar-controller-path .xray-bar-btn').click ->
       Xray.open($(this).attr('data-path'))
     @$el.find('.xray-bar-all-toggler').click       -> Xray.show()
