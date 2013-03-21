@@ -68,9 +68,7 @@ Xray.findTemplates = -> bm 'addTemplates', ->
 
 # Open the given filesystem path by calling out to Xray's server.
 Xray.open = (path) ->
-  $.ajax
-    url: "/_xray/open?path=#{path}"
-    dataType: 'script'
+  $.ajax(url: "/_xray/open?path=#{path}")
 
 # Show the Xray overlay
 Xray.show = (type = null) ->
@@ -125,8 +123,6 @@ class Xray.Specimen
         top      : @$contents.css('top')
         left     : @$contents.css('left')
     @$box.click =>
-      console.log "Opening #{@path}"
-      console.log @$contents
       Xray.open @path
     @$box.append @makeLabel
 
