@@ -220,8 +220,11 @@ class Xray.Overlay
       for element in specimens
         continue unless element.isVisible()
         element.makeBox()
-        element.$box.css(zIndex: Math.ceil((10000 + element.bbox.top + element.bbox.left)))
-        @shownBoxes .push element.$box
+        # A cheap way to "order" the boxes, where boxes closer to the top
+        # have a lower z-index than those positioned lower.
+        element.$box.css
+          zIndex: Math.ceil(MAX_ZINDEX*0.9 + element.bbox.top + element.bbox.left)
+        @shownBoxes.push element.$box
         $('body').append element.$box
 
   reset: ->
