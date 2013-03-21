@@ -36,7 +36,7 @@ Xray.constructorInfo = (constructor) ->
   null
 
 # Scans the document for templates, creating Xray.TemplateSpecimens for them.
-Xray.findTemplates = -> util.bm 'addTemplates', ->
+Xray.findTemplates = -> util.bm 'findTemplates', ->
   # Find all <!-- XRAY START ... --> comments
   comments = $('*:not(iframe,script)').contents().filter ->
     this.nodeType == 8 and this.data[0..9] == "XRAY START"
@@ -51,7 +51,7 @@ Xray.findTemplates = -> util.bm 'addTemplates', ->
       if el.nodeType == 1 and el.tagName != 'SCRIPT'
         $templateContents.push el
       el = el.nextSibling
-    # Remove XRAY's template comments from the DOM.
+    # Remove XRAY template comments from the DOM.
     el.parentNode.removeChild(el) if el?.nodeType == 8
     comment.parentNode.removeChild(comment)
     # Add the template specimen
@@ -124,13 +124,6 @@ class Xray.Specimen
 # Backbone.View.
 class Xray.ViewSpecimen extends Xray.Specimen
   @all = []
-
-  makeLabel: ->
-    if @template
-      handles = $("<div class='xray-specimen-multi-handle'>")
-      handles.append(super).append(@template.makeLabel())
-    else
-      super
 
 
 # Wraps elements that were rendered by a template, e.g. a Rails partial or
@@ -216,6 +209,13 @@ class Xray.Bar
 
 # Utility methods.
 util =
+  # Benchmark a piece of code
+  bm: (name, fn) ->
+    time = new Date
+    result = fn()
+    # console.log "#{name} : #{new Date() - time}ms"
+    result
+
   # Computes the bounding box of a jQuery set, which may be many sibling
   # elements with no parent in the set.
   computeBoundingBox: ($contents) ->
@@ -248,9 +248,3 @@ util =
       height : boxFrame.bottom - boxFrame.top
     }
 
-  # Benchmark a piece of code
-  bm: (name, fn) ->
-    time = new Date
-    result = fn()
-    # console.log "#{name} : #{new Date() - time}ms"
-    result
