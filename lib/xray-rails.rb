@@ -30,8 +30,8 @@ module Xray
   # Captures:
   #   $1 = space before the constructor
   #   $2 = the constructor's name
-  #   $3 = the beginning of the function
-  CONSTRUCTOR_REGEX = /^( *)([\w\.]+) *= *(#{CONSTRUCTOR_PATTERNS.join('|')})/m
+  #   $3 = the beginning of the constructor function
+  CONSTRUCTOR_REGEX = /^( *)([\w\.]+) *= *(#{CONSTRUCTOR_PATTERNS.join('|')})/
 
   # Returns augmented JS source where constructors Xray wants to know the
   # filepath of are captured in such a way that at runtime, xray.js can look
@@ -55,8 +55,9 @@ module Xray
     end
   end
 
-  # Returns augmented HTML where it's simply wrapped in an HTML comment with filepath info.
-  # Xray.js strips these comments from the DOM and save the filepath info in memory.
+  # Returns augmented HTML where the source is simply wrapped in an HTML
+  # comment with filepath info. Xray.js uses these comments to associate
+  # elements with the tempaltes that rendered them.
   #
   # This:
   #   <div class=".my-element">

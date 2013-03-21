@@ -24,17 +24,16 @@ module Xray
         end
         res.finish
 
-      # Inject xray.js and friends.
+      # Inject xray.js and friends if it's a plain ol' successful HTML request.
       else
         status, headers, response = @app.call(env)
-
         if should_inject_xray?(status, headers, response)
           body = response.body.sub(/<body[^>]*>/) { "#{$~}\n#{xray_bar}" }
           append_js!(body, 'jquery', :xray)
           append_js!(body, 'backbone', :'xray-backbone')
           headers['Content-Length'] = body.bytesize.to_s
         end
-        [status, headers, body ? [body] : response]
+        [status, headers, (body ? [body] : response)]
       end
     end
 
