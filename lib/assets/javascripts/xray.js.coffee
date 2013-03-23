@@ -47,14 +47,15 @@ Xray.constructorInfo = (constructor) ->
 Xray.findTemplates = -> bm 'addTemplates', ->
   # Find all <!-- XRAY START ... --> comments
   comments = $('*:not(iframe,script)').contents().filter ->
-    this.nodeType == 8 and this.data[0..10] == " XRAY START"
+    this.nodeType == 8 and this.data[0..9] == "XRAY START"
+
   # Find the <!-- XRAY END ... --> comment for each. Everything between the
   # start and end comment becomes the contents of an Xray.TemplateSpecimen.
   for comment in comments
-    [_, id, path] = comment.data.match(/^ XRAY START (\d+) (.*) $/)
+    [_, id, path] = comment.data.match(/^XRAY START (\d+) (.*)$/)
     $templateContents = new jQuery
     el = comment.nextSibling
-    until !el or (el.nodeType == 8 and el.data == " XRAY END #{id} ")
+    until !el or (el.nodeType == 8 and el.data == "XRAY END #{id}")
       if el.nodeType == 1 and el.tagName != 'SCRIPT'
         $templateContents.push el
       el = el.nextSibling

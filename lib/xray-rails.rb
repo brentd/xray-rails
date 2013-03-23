@@ -79,9 +79,9 @@ module Xray
 
     # skim doesn't allow html comments, so use skim's comment syntax if it's skim
     if path =~ /\.(skim)(\.|$)/
-      augmented = "/! XRAY START #{@id} #{path} \n#{source}\n/! XRAY END #{@id} "
+      augmented = "/!XRAY START #{@id} #{path}\n#{source}\n/!XRAY END #{@id}"
     else
-      augmented = "<!-- XRAY START #{@id} #{path} -->\n#{source}\n<!-- XRAY END #{@id} -->"
+      augmented = "<!--XRAY START #{@id} #{path}-->\n#{source}\n<!--XRAY END #{@id}-->"
     end
 
     ActiveSupport::SafeBuffer === source ? ActiveSupport::SafeBuffer.new(augmented) : augmented
