@@ -76,11 +76,9 @@ module Xray
   #   <!-- XRAY END 123 -->
   def self.augment_template(source, path)
     @id = (@id ||= 0) + 1
-    # figure out the JST's extension, e.g. 'skim', 'slim', etc
-    template_lang = path.split('.').last
 
-    # skim doesn't allow html comments, so use skim's comment syntax
-    if template_lang == 'skim'
+    # skim doesn't allow html comments, so use skim's comment syntax if it's skim
+    if path =~ /\.(skim)(\.|$)/
       augmented = "/! XRAY START #{@id} #{path} \n#{source}\n/! XRAY END #{@id} "
     else
       augmented = "<!-- XRAY START #{@id} #{path} -->\n#{source}\n<!-- XRAY END #{@id} -->"
