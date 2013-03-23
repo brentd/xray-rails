@@ -76,7 +76,14 @@ module Xray
   #   <!-- XRAY END 123 -->
   def self.augment_template(source, path)
     @id = (@id ||= 0) + 1
-    augmented = "<!-- XRAY START #{@id} #{path} -->\n#{source}\n<!-- XRAY END #{@id} -->"
+
+    # skim doesn't allow html comments, so use skim's comment syntax if it's skim
+    if path =~ /\.(skim)(\.|$)/
+      augmented = "/!XRAY START #{@id} #{path}\n#{source}\n/!XRAY END #{@id}"
+    else
+      augmented = "<!--XRAY START #{@id} #{path}-->\n#{source}\n<!--XRAY END #{@id}-->"
+    end
+
     ActiveSupport::SafeBuffer === source ? ActiveSupport::SafeBuffer.new(augmented) : augmented
   end
 end

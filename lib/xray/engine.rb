@@ -40,16 +40,14 @@ module Xray
       end
 
       # Augment JS templates
-      # TODO: Temporarily disabled - before compilation, it could be a template engine that has a
-      #       different syntax for HTML comments (slim for example). Need to handle this.
-      # app.assets.register_preprocessor 'application/javascript', :xray do |context, source|
-      #   path = context.pathname.to_s
-      #   if path =~ /^#{app.root}.+\.(jst)(\.|$)/
-      #     Xray.augment_template(source, path)
-      #   else
-      #     source
-      #   end
-      # end
+      app.assets.register_preprocessor 'application/javascript', :xray do |context, source|
+        path = context.pathname.to_s
+        if path =~ /^#{app.root}.+\.(jst)(\.|$)/
+          Xray.augment_template(source, path)
+        else
+          source
+        end
+      end
 
       # This event is called near the beginning of a request cycle. We use it to
       # collect information about the controller and action that is responding, for
