@@ -2,6 +2,7 @@
 require File.expand_path('../lib/xray/version', __FILE__)
 
 Gem::Specification.new do |gem|
+  gem.name          = "xray-rails"
   gem.authors       = ["Brent Dillingham"]
   gem.email         = ["brentdillingham@gmail.com"]
   gem.summary       = %q{Visualize and edit your app's UI structure}
@@ -9,9 +10,9 @@ Gem::Specification.new do |gem|
   gem.homepage      = "https://github.com/brentd/xray-rails"
 
   gem.files         = `git ls-files`.split($\)
-  gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
-  gem.name          = "xray-rails"
   gem.require_paths = ["lib"]
   gem.version       = Xray::VERSION
+
+  gem.add_dependency 'coffee-rails'
 end

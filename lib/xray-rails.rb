@@ -1,3 +1,5 @@
+require "json"
+require "active_support/all"
 require "xray/version"
 require "xray/middleware"
 
@@ -18,7 +20,7 @@ module Xray
   # positives, because we can't only match direct Backbone.View subclasses -
   # the app's JS may have a more complex class hierarchy than that.
   CONSTRUCTOR_PATTERNS = [
-    '(?!jQuery|_)\.extend\({', # Match uses of extend(), excluding jQuery and underscore
+    '(?!jQuery|_)[\w\.]+\.extend\({', # Match uses of extend(), excluding jQuery and underscore
     '\(function\(_super\) {'   # Coffeescript-generated constructors
   ]
 
