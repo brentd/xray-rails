@@ -56,10 +56,10 @@ describe "Xray.augment_template" do
     END
     augmented = Xray.augment_template(source, "/path/to/file.html.erb")
     expect(augmented).to eql <<-END.unindent
-      <!-- XRAY START 1 /path/to/file.html.erb -->
+      <!--XRAY START 1 /path/to/file.html.erb-->
       <div class="container">
       </div>
-      <!-- XRAY END 1 -->
+      <!--XRAY END 1-->
     END
   end
 end
