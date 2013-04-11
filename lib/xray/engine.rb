@@ -30,7 +30,7 @@ module Xray
         def render_with_xray(*args, &block)
           path = identifier
           source = render_without_xray(*args, &block)
-          if path =~ /^#{Rails.application.root}.+\.(html|slim|haml)(\.|$)/
+          if path =~ /\.(html|slim|haml)(\.|$)/ && !path.include?('_xray_bar')
             Xray.augment_template(source, path)
           else
             source
