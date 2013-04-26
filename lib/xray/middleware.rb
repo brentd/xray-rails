@@ -2,6 +2,7 @@ require "open3"
 
 module Xray
   OPEN_PATH = '/_xray/open'
+  UPDATE_CONFIG_PATH = '/_xray/config'
 
   # This middleware is responsible for injecting xray.js, xray-backbone.js, and
   # the Xray bar into the app's pages. It also listens for requests to open files
@@ -15,7 +16,7 @@ module Xray
       # Request for opening a file path.
       if env['PATH_INFO'] == OPEN_PATH
         req, res = Rack::Request.new(env), Rack::Response.new
-        out, err, status = Open3.capture3('/usr/local/bin/subl', req.GET['path'])
+        out, err, status = Open3.capture3(Xray.config.editor, req.GET['path'])
         if status.success?
           res.status = 200
         else
@@ -23,7 +24,14 @@ module Xray
           res.status = 500
         end
         res.finish
-
+      elsif env['PATH_INFO'] == UPDATE_CONFIG_PATH
+        req, res = Rack::Request.new(env), Rack::Response.new
+        if req.post? && Xray.config.editor = req.POST['editor']
+          res.status = 200
+        else
+          res.status = 400
+        end
+        res.finish
       # Inject xray.js and friends if it's a plain ol' successful HTML request.
       else
         status, headers, response = @app.call(env)
