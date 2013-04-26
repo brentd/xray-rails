@@ -14,5 +14,10 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = Xray::VERSION
 
+  gem.add_dependency 'rails', '>= 3.2.0'
   gem.add_dependency 'coffee-rails'
+  gem.add_development_dependency 'rspec-rails'
+  gem.add_development_dependency 'sqlite3'
+  # jquery-rails is used by the dummy Rails application
+  gem.add_development_dependency 'jquery-rails'
 end
