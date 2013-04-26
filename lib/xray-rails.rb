@@ -21,7 +21,7 @@ module Xray
   # the app's JS may have a more complex class hierarchy than that.
   CONSTRUCTOR_PATTERNS = [
     '(?!jQuery|_)[\w\.]+\.extend\({', # Match uses of extend(), excluding jQuery and underscore
-    '\(function\(_super\) {'   # Coffeescript-generated constructors
+    '\(function\(_super\) {'          # Coffeescript-generated constructors
   ]
 
   # Example matches:
