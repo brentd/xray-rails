@@ -207,6 +207,12 @@
     cursor: pointer;
     text-shadow: 0 1px 0 #000;
     font-size: 16px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
   }
 
     #xray-bar .xray-bar-settings-btn:hover {
@@ -216,6 +222,9 @@
 #xray-settings {
   position: absolute;
   right: 0;
+  bottom: 40px;
+  width: 300px;
+  height: 200px;
   background: rgba(0,0,0,0.9);
   padding: 10px;
   font-size: 14px

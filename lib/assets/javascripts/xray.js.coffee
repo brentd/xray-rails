@@ -193,6 +193,8 @@ class Xray.Bar
     @$el.find('.xray-bar-templates-toggler').click -> Xray.show('templates')
     @$el.find('.xray-bar-views-toggler').click     -> Xray.show('views')
 
+    @$el.find('.xray-bar-settings-btn').click @toggleSettings
+
   show: ->
     @$el.show()
     @originalPadding = parseInt $('html').css('padding-bottom')
@@ -204,8 +206,7 @@ class Xray.Bar
     $('html').css paddingBottom: @originalPadding
 
   toggleSettings: =>
-    @$settings.show()
-
+    @$el.find('#xray-settings').toggle()
 
 # Utility methods.
 util =
