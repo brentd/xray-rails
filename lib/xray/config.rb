@@ -10,18 +10,16 @@ module Xray
     CONFIG_FILE = "#{Dir.home}/.xrayconfig"
     DEFAULT_EDITOR = '/usr/local/bin/subl'
 
-    def initialize
-      load_config if File.exists?(CONFIG_FILE)
-    end
-
     def editor
-      @editor ||= '/usr/local/bin/subl'
+      load_config[:editor]
     end
 
     def editor=(new_editor)
-      if new_editor != editor && File.exists?(new_editor)
-        @editor = new_editor
-        write_config
+      if new_editor && new_editor != editor && File.exists?(new_editor)
+        write_config(editor: new_editor)
+        true
+      else
+        false
       end
     end
 
@@ -31,13 +29,23 @@ module Xray
 
     private
 
-    def write_config
-      File.open(CONFIG_FILE, 'w') { |f| f.write(to_yaml) }
+    def write_config(new_config)
+      config = load_config.merge(new_config)
+      File.open(CONFIG_FILE, 'w') { |f| f.write(config.to_yaml) }
     end
 
     def load_config
-      saved_config = YAML.load_file(CONFIG_FILE)
-      self.editor = saved_config[:editor]
+      default_config.merge(local_config)
+    end
+
+    def local_config
+      YAML.load_file(CONFIG_FILE)
+    rescue
+      {}
+    end
+
+    def default_config
+      { editor: DEFAULT_EDITOR }
     end
 
   end

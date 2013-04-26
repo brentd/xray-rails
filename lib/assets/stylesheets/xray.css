@@ -224,7 +224,7 @@
   right: 0;
   bottom: 40px;
   width: 300px;
-  height: 200px;
+  height: 100px;
   background: rgba(0,0,0,0.9);
   padding: 10px;
   font-size: 14px
@@ -250,11 +250,23 @@
     vertical-align: middle;
   }
 
+  #xray-settings button {
+    position: absolute;
+    right: 18px;
+    left: 18px;
+    bottom: 10px;
+    padding: 7px;
+  }
+
   #xray-settings p {
     font-size: 12px;
     color: #666;
     text-align: center;
     margin: 10px 0 0 0;
+  }
+
+  #xray-settings .xray-settings-update-msg {
+    margin-left: 12px;
   }
 
 

@@ -1,7 +1,8 @@
 require "json"
 require "active_support/all"
-require "xray/version"
-require "xray/middleware"
+require_relative "xray/version"
+require_relative "xray/config"
+require_relative "xray/middleware"
 
 if defined?(Rails) && Rails.env.development?
   require "xray/engine"

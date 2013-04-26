@@ -71,6 +71,9 @@ Xray.show = (type = null) ->
 Xray.hide = ->
   Xray.Overlay.instance().hide()
 
+Xray.toggleSettings = ->
+  Xray.Overlay.instance().settings.toggle()
+
 # Wraps a DOM element that Xray is tracking. This is subclassed by
 # Xray.TemplateSpecimen and Xray.ViewSpecimen.
 class Xray.Specimen
@@ -139,7 +142,8 @@ class Xray.Overlay
 
   constructor: ->
     Xray.Overlay.singletonInstance = this
-    @bar = new Xray.Bar($('#xray-bar'))
+    @bar = new Xray.Bar('#xray-bar')
+    @settings = new Xray.Settings('#xray-settings')
     @shownBoxes = []
     @$overlay = $('<div id="xray-overlay">')
     @$overlay.click => @hide()
@@ -192,8 +196,7 @@ class Xray.Bar
     @$el.find('.xray-bar-all-toggler').click       -> Xray.show()
     @$el.find('.xray-bar-templates-toggler').click -> Xray.show('templates')
     @$el.find('.xray-bar-views-toggler').click     -> Xray.show('views')
-
-    @$el.find('.xray-bar-settings-btn').click @toggleSettings
+    @$el.find('.xray-bar-settings-btn').click      -> Xray.toggleSettings()
 
   show: ->
     @$el.show()
@@ -205,8 +208,32 @@ class Xray.Bar
     @$el.hide()
     $('html').css paddingBottom: @originalPadding
 
-  toggleSettings: =>
-    @$el.find('#xray-settings').toggle()
+class Xray.Settings
+  constructor: (el) ->
+    @$el = $(el)
+    @$el.find('form').submit @save
+
+  toggle: =>
+    @$el.toggle()
+
+  save: (e) =>
+    e.preventDefault()
+    editor = @$el.find('#xray-editor-input').val()
+    $.ajax
+      url: '/_xray/config'
+      type: 'POST'
+      data: {editor: editor}
+      success: => @displayUpdateMsg(true)
+      error: => @displayUpdateMsg(false)
+
+  displayUpdateMsg: (success) =>
+    if success
+      $msg = $("<span class='xray-settings-success xray-settings-update-msg'>Success!</span>")
+    else
+      $msg = $("<span class='xray-settings-error xray-settings-update-msg'>Uh oh, something went wrong!</span>")
+    @$el.append($msg)
+    $msg.delay(2000).fadeOut(500, -> $msg.remove())
+
 
 # Utility methods.
 util =
