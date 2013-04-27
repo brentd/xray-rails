@@ -16,7 +16,7 @@ module Xray
       # Request for opening a file path.
       if env['PATH_INFO'] == OPEN_PATH
         req, res = Rack::Request.new(env), Rack::Response.new
-        out, err, status = Open3.capture3(Xray.config.editor, req.GET['path'])
+        out, err, status = Xray.open_file(req.GET['path'])
         if status.success?
           res.status = 200
         else

@@ -27,6 +27,25 @@ $ bundle && rm -rf tmp/cache/assets
 
 Restart your app, open your browser, and press `cmd+ctrl+x` to see the overlay.
 
+
+### Configuration
+
+By default, Xray will open files with Sublime Text, looking for `/usr/local/bin/subl`.
+
+You can configure this to be your editor of choice in Xray's UI, or create `~/.xrayconfig`, which is a YAML file.
+
+Example `.xrayconfig`:
+
+```yaml
+:editor: '/usr/local/bin/mate'
+```
+
+Or for something more complex, use the `$file` placeholder.
+
+```yaml
+:editor: "/usr/local/bin/tmux split-window -v '/usr/local/bin/vim $file'"
+```
+
 ### How this works
 
 * During asset compilation, JS files and templates are augmented to contain file path information.
@@ -43,4 +62,4 @@ Restart your app, open your browser, and press `cmd+ctrl+x` to see the overlay.
   * ~~Add buttons to Xray bar to trigger the overlay for templates and Backbone views~~
   * Visualize major CSS components
   * Jump to correct line number in editor
-  
+

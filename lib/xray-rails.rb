@@ -9,6 +9,8 @@ if defined?(Rails) && Rails.env.development?
 end
 
 module Xray
+  FILE_PLACEHOLDER = '$file'
+
   # Used to collect request information during each request cycle for use in
   # the Xray bar.
   # TODO: there's nothing thread-safe about this. Not sure how big of a deal that is.
@@ -89,4 +91,15 @@ module Xray
 
     ActiveSupport::SafeBuffer === source ? ActiveSupport::SafeBuffer.new(augmented) : augmented
   end
+
+  def self.open_file(file)
+    editor = Xray.config.editor
+    cmd = if editor.include?('$file')
+      editor.gsub '$file', file
+    else
+      "#{editor} #{file}"
+    end
+    Open3.capture3(cmd)
+  end
+
 end
