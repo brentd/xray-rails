@@ -36,9 +36,12 @@
   </div>
   <span class="xray-bar-settings-btn xray-icon-cog"></span>
   <div id="xray-settings" style="display:none">
-    <label for="xray-editor-input">Editor</label>
-    <input id="xray-editor-input" type="text">
-    <p>Settings are saved to ~/.xrayconfig</p>
+    <form>
+      <label for="xray-editor-input">Editor</label>
+      <input id="xray-editor-input" type="text" value="<%= Xray.config.editor %>">
+      <button type="submit">Save</button>
+      <p>Settings are saved to ~/.xrayconfig</p>
+  </form>
   </div>
   <%= stylesheet_link_tag :xray %>
 </div>
