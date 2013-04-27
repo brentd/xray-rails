@@ -232,7 +232,7 @@ class Xray.Settings
     else
       $msg = $("<span class='xray-settings-error xray-settings-update-msg'>Uh oh, something went wrong!</span>")
     @$el.append($msg)
-    $msg.delay(2000).fadeOut(500, -> $msg.remove())
+    $msg.delay(2000).fadeOut(500, => $msg.remove(); @toggle())
 
 
 # Utility methods.
