@@ -1,5 +1,40 @@
 @charset "UTF-8";
 
+/* selector for element and children */
+#xray-overlay, #xray-overlay *, #xray-overlay a:hover, #xray-overlay a:visited, #xray-overlay a:active,
+#xray-bar, #xray-bar *, #xray-bar a:hover, #xray-bar a:visited, #xray-bar a:active {
+  background:none;
+  border:none;
+  bottom:auto;
+  clear:none;
+  cursor:default;
+  float:none;
+  font-family:Arial, Helvetica, sans-serif;
+  font-size:medium;
+  font-style:normal;
+  font-weight:normal;
+  height:auto;
+  left:auto;
+  letter-spacing:normal;
+  line-height:normal;
+  max-height:none;
+  max-width:none;
+  min-height:0;
+  min-width:0;
+  overflow:visible;
+  position:static;
+  right:auto;
+  text-align:left;
+  text-decoration:none;
+  text-indent:0;
+  text-transform:none;
+  top:auto;
+  visibility:visible;
+  white-space:normal;
+  width:auto;
+  z-index:auto;
+}
+
 #xray-overlay {
   position: fixed; left: 0; top: 0; bottom: 0; right: 0;
   background: rgba(0,0,0,0.7);
@@ -256,6 +291,14 @@
     left: 18px;
     bottom: 10px;
     padding: 7px;
+    color: #fff;
+    background: #04be00;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  #xray-settings button:hover {
+    background: #049d00;
   }
 
   #xray-settings p {
