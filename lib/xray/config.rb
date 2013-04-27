@@ -15,7 +15,7 @@ module Xray
     end
 
     def editor=(new_editor)
-      if new_editor && new_editor != editor && File.exists?(new_editor)
+      if new_editor && new_editor != editor
         write_config(editor: new_editor)
         true
       else
