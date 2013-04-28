@@ -167,8 +167,8 @@ class Xray.Overlay
       for element in specimens
         continue unless element.isVisible()
         element.makeBox()
-        # A cheap way to "order" the boxes, where boxes closer to the top
-        # have a lower z-index than those positioned lower.
+        # A cheap way to "order" the boxes, where boxes positioned closer to the
+        # bottom right of the document have a higher z-index.
         element.$box.css
           zIndex: Math.ceil(MAX_ZINDEX*0.9 + element.bounds.top + element.bounds.left)
         @shownBoxes.push element.$box
