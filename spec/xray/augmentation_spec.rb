@@ -50,6 +50,7 @@ end
 
 describe "Xray.augment_template" do
   it "wraps HTML source with comments containing the path" do
+    Xray.stub(next_id: 1)
     source = <<-END.unindent
       <div class="container">
       </div>

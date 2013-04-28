@@ -8,8 +8,8 @@ require "active_resource/railtie"
 require "sprockets/railtie"
 # require "rails/test_unit/railtie"
 
-Bundler.require
-require "xray-rails"
+Bundler.require(:default, Rails.env)
+require 'xray-rails'
 
 module Dummy
   class Application < Rails::Application
