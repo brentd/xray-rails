@@ -6,9 +6,6 @@ module Xray
   # in the browser. It also hooks in a middleware responsible for injecting
   # xray.js and the xray bar into the app's response bodies.
   class Engine < ::Rails::Engine
-    paths['app/assets'] = 'lib/assets'
-    paths['app/views']  = 'lib/xray/views'
-
     initializer "xray.initialize" do |app|
       app.middleware.use Xray::Middleware
 
