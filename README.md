@@ -24,7 +24,7 @@ Add to your Gemfile, preferably under your development group:
 ```ruby
 group :development do
   ...
-  gem 'xray-rails', github: 'brentd/xray-rails'
+  gem 'xray-rails'
 end
 ```
 
