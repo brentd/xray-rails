@@ -1,6 +1,6 @@
-# Xray
+Xray
 
-### Reveal the structure of your UI.
+### Reveal your your UI's bones
 
 The dev tools available to web developers in modern browsers are great. Many of us can't remember what life was like before "Inspect Element". But what we see in the compiled output sent to our browser is often the wrong level of detail - what about being able to visualize the higher level components of your UI? Controllers, templates, partials, Backbone views, etc.
 
@@ -8,7 +8,7 @@ Xray is the missing link between the browser and your app code. Press **cmd+ctrl
 
 ![Screenshot](http://dl.dropbox.com/u/156655/Screenshots/xgf7ukh3fya-.png)
 
-### Current Support
+## Current Support
 
 Xray is in early stages and currently supports only Rails 3.1+ with use of the asset pipeline as a requirement.
 
@@ -17,7 +17,7 @@ So far, Xray can reveal:
   * Rails views and partials
   * Backbone View instances
 
-### Installation
+## Installation
 
 To use Xray, you'll need at least **jQuery** on your pages. Backbone is optional. Also, `config.assets.debug = false` (the default) must be in development.rb.
 
@@ -38,7 +38,7 @@ $ bundle && rm -rf tmp/cache/assets
 
 Restart your app, open your browser, and press `cmd+ctrl+x` to see the overlay.
 
-### Configuration
+## Configuration
 
 By default, Xray will open files with Sublime Text, looking for `/usr/local/bin/subl`.
 
@@ -56,14 +56,14 @@ Or for something more complex, use the `$file` placeholder.
 :editor: "/usr/local/bin/tmux split-window -v '/usr/local/bin/vim $file'"
 ```
 
-### How this works
+## How this works
 
 * During asset compilation, JS files and templates are modified to contain file path information.
 * A middleware inserts `xray.js`, `xray.css`, and the Xray bar into all successful HTML response bodies.
 * When the overlay is shown, `xray.js` examines the file path information inserted during asset compilation.
 * Another middleware piggybacks the Rails server to respond to requests to open file paths with the user's desired editor.
 
-### Contributing
+## Contributing
 
 If you have an idea, open an issue and let's talk about it, or fork away and send a pull request.
 
