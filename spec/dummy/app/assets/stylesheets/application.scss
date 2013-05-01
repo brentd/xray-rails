@@ -11,3 +11,17 @@
  *= require_self
  *= require_tree .
  */
+
+ body {
+  font-family: "Helvetica Neue", "Helvetica", sans-serif;
+  font-weight: 200;
+ }
+
+.container {
+  background: rgba(#000, 0.2);
+  padding: 50px 0;
+  text-align: center;
+  margin: 20px;
+  color: #999;
+  font-size: 20px;
+}

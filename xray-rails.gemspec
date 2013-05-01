@@ -20,5 +20,8 @@ Gem::Specification.new do |gem|
   # Required for the dummy Rails app in spec/dummy
   gem.add_development_dependency 'sqlite3'
   gem.add_development_dependency 'jquery-rails'
+  gem.add_development_dependency 'backbone-rails'
+  gem.add_development_dependency 'sass-rails'
+  gem.add_development_dependency 'eco'
   gem.add_development_dependency 'capybara', '2.1.0'
 end
