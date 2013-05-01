@@ -250,7 +250,7 @@ util =
     # Edge case: the container may not physically wrap its children, for
     # example if they are floated and no clearfix is present.
     if $contents.length == 1 and $contents.height() <= 0
-      return util._computeBoundingBox($contents.children())
+      return util.computeBoundingBox($contents.children())
 
     boxFrame =
       top    : Number.POSITIVE_INFINITY
