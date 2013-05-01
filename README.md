@@ -19,6 +19,8 @@ So far, Xray can reveal:
 
 ### Installation
 
+To use Xray, you'll need at least **jQuery** on your pages. Backbone is optional. Also, `config.assets.debug = false` (the default) must be in development.rb.
+
 Add to your Gemfile, preferably under your development group:
 
 ```ruby
