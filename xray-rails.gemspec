@@ -5,12 +5,11 @@ Gem::Specification.new do |gem|
   gem.name          = "xray-rails"
   gem.authors       = ["Brent Dillingham"]
   gem.email         = ["brentdillingham@gmail.com"]
-  gem.summary       = %q{Visualize and edit your app's UI structure}
+  gem.summary       = %q{Reveal the structure of your UI}
   gem.description   = %q{Provides a dev bar and an overlay in-browser to visualize your UI's rendered partials and Backbone views}
   gem.homepage      = "https://github.com/brentd/xray-rails"
 
-  gem.files         = `git ls-files`.split($\)
-  gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
+  gem.files         = Dir['{app,lib}/**/*'] + ['LICENSE', 'README.md']
   gem.require_paths = ["lib"]
   gem.version       = Xray::VERSION
 
