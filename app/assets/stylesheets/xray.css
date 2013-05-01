@@ -202,6 +202,7 @@
     #xray-bar #xray-bar-togglers .xray-bar-btn {
       border-radius: 0;
       margin-right: 0;
+      color: #999;
     }
 
     #xray-bar #xray-bar-togglers .xray-bar-btn:first-child {
@@ -223,8 +224,15 @@
       text-shadow: none;
     }
 
+    #xray-bar #xray-bar-togglers .xray-bar-btn.active {
+      background: #555;
+      color: #fff;
+    }
+
     #xray-bar #xray-bar-togglers .xray-bar-templates-toggler:before { content: 'HTML'; }
+    #xray-bar #xray-bar-togglers .xray-bar-templates-toggler.active:before { background: red; }
     #xray-bar #xray-bar-togglers .xray-bar-views-toggler:before { content: 'JS'; }
+    #xray-bar #xray-bar-togglers .xray-bar-views-toggler.active:before { background: #fff; color: #333; }
     #xray-bar #xray-bar-togglers .xray-bar-styles-toggler:before { content: 'CSS'; }
 
     #xray-bar #xray-bar-togglers .xray-icon-search:before {

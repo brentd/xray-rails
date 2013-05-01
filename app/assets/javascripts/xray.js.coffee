@@ -152,6 +152,7 @@ class Xray.Overlay
     @reset()
     Xray.isShowing = true
     util.bm 'show', =>
+      @bar.$el.find('#xray-bar-togglers .xray-bar-btn').removeClass('active')
       unless @$overlay.is(':visible')
         $('body').append @$overlay
         @bar.show()
@@ -159,11 +160,14 @@ class Xray.Overlay
         when 'templates'
           Xray.findTemplates()
           specimens = Xray.TemplateSpecimen.all
+          @bar.$el.find('.xray-bar-templates-toggler').addClass('active')
         when 'views'
           specimens = Xray.ViewSpecimen.all
+          @bar.$el.find('.xray-bar-views-toggler').addClass('active')
         else
           Xray.findTemplates()
           specimens = Xray.specimens()
+          @bar.$el.find('.xray-bar-all-toggler').addClass('active')
       for element in specimens
         continue unless element.isVisible()
         element.makeBox()
@@ -207,6 +211,7 @@ class Xray.Bar
   hide: ->
     @$el.hide()
     $('html').css paddingBottom: @originalPadding
+
 
 class Xray.Settings
   constructor: (el) ->
