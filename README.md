@@ -40,7 +40,7 @@ Restart your app, open your browser, and press `cmd+ctrl+x` to see the overlay.
 
 By default, Xray will open files with Sublime Text, looking for `/usr/local/bin/subl`.
 
-You can configure this to be your editor of choice in Xray's UI, or create `~/.xrayconfig`, which is a YAML file.
+You can configure this to be your editor of choice in Xray's UI, or create `~/.xrayconfig`, a YAML file.
 
 Example `.xrayconfig`:
 
@@ -57,18 +57,18 @@ Or for something more complex, use the `$file` placeholder.
 ### How this works
 
 * During asset compilation, JS files and templates are modified to contain file path information.
-* A middleware inserts `xray.js`, `xray.css`, and the Xray bar to all successful HTML response bodies.
-* When the overlay is shown, `xray.js` examines the augmented file path information inserted during asset compilation.
+* A middleware inserts `xray.js`, `xray.css`, and the Xray bar into all successful HTML response bodies.
+* When the overlay is shown, `xray.js` examines the file path information inserted during asset compilation.
 * Another middleware piggybacks the Rails server to respond to requests to open file paths with the user's desired editor.
 
 ### Contributing
 
-This project is still young. I have plans to solidify xray.js into a generic API and specification that could be used to aid development inside any framework.
+If you have an idea, open an issue and let's talk about it, or fork away and send a pull request.
 
-Until then, there's still plenty of improvements that could be made.
-
-A laudry list of ideas/problems that could be taken on:
+A laundry list of things to take on:
 
   * Reveal views from Ember, Knockout, Angular, etc.
   * Overlapping boxes are a problem - parent views in real applications will often be obscured by their children.
   * The current scheme for associating a JS constructor with a filepath is messy and can make stack traces ugly.
+
+Worth noting is that I have plans to solidify xray.js into an API and specification that could be used to aid development in any framework - not just Rails and the asset pipeline.
