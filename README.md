@@ -11,22 +11,21 @@ Xray is the missing link between the browser and your app code. Press **cmd+ctrl
 
 ## Current Support
 
-Xray is in early stages and currently supports only Rails 3.1+ with use of the asset pipeline as a requirement.
+Xray is intended to be run on Rails 3.1+ and Ruby 1.9.
 
 So far, Xray can reveal:
 
   * Rails views and partials
-  * Backbone View instances
+  * Backbone View instances if using the asset pipeline
 
 ## Installation
 
-To use Xray, you'll need at least **jQuery** on your pages. Backbone is optional. Also, `config.assets.debug = true` (the default) must be in development.rb.
+Xray depends on **jQuery**, so it will need to be included in your layout. Backbone is optional.
 
-Add to your Gemfile, preferably under your development group:
+Xray should only be present during development. Add it to your Gemfile like so:
 
 ```ruby
 group :development do
-  ...
   gem 'xray-rails'
 end
 ```
@@ -37,7 +36,19 @@ Then bundle and delete your cached assets:
 $ bundle && rm -rf tmp/cache/assets
 ```
 
-Restart your app, open your browser, and press `cmd+ctrl+x` to see the overlay.
+Restart your app, visit it in your browser, and press `cmd+ctrl+x` to see the overlay.
+
+**Note:** for Xray to insert itself into your views automatically, `config.assets.debug = true` (the default) must be set in development.rb. If you disabled this because of slow assets in Rails 3.2.13, [try this monkey patch instead](http://stackoverflow.com/a/15520932/24848) in an initializer.
+
+Otherwise, you can insert Xray's scripts yourself, for example like so in application.js:
+
+```js
+//= require jquery
+//= require xray
+...
+//= require backbone
+//= require xray-backbone
+```
 
 ## Configuration
 
