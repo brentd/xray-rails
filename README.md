@@ -7,7 +7,7 @@ The dev tools available to web developers in modern browsers are great. Many of 
 
 Xray is the missing link between the browser and your app code. Press **cmd+ctrl+x** to reveal an overlay of what files are powering your UI - click anything to open the associated file in your editor. [Here's a GIF](http://f.cl.ly/items/1A0o3y1y3Q13103V3F1l/xray-rails-large.gif) of Xray in action.
 
-![Screenshot](http://dl.dropbox.com/u/156655/Screenshots/xgf7ukh3fya-.png)
+![Screenshot](https://dl.dropboxusercontent.com/u/156655/xray-screenshot.png)
 
 ## Current Support
 
