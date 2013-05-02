@@ -1,7 +1,7 @@
 Xray
 ====
 
-### Reveal your your UI's bones
+### Reveal your UI's bones
 
 The dev tools available to web developers in modern browsers are great. Many of us can't remember what life was like before "Inspect Element". But what we see in the compiled output sent to our browser is often the wrong level of detail - what about being able to visualize the higher level components of your UI? Controllers, templates, partials, Backbone views, etc.
 
