@@ -11,7 +11,7 @@ Xray.init = do ->
 
   # Register keyboard shortcuts
   $(document).keydown (e) ->
-    if e.ctrlKey and e.metaKey and e.keyCode is 88 # cmd+ctrl+x
+    if e.ctrlKey and (e.metaKey or e.shiftKey) and e.keyCode is 88 # cmd+ctrl+x or shift+ctrl+x
       if Xray.isShowing then Xray.hide() else Xray.show()
     if Xray.isShowing and e.keyCode is 27 # esc
       Xray.hide()
@@ -22,7 +22,7 @@ Xray.init = do ->
     # Go ahead and do a pass on the DOM to find templates.
     Xray.findTemplates()
     # Ready to rock.
-    console?.log "Ready to Xray. Press cmd+ctrl+x to scan your UI."
+    console?.log "Ready to Xray. Press cmd+ctrl+x or ctrl+shift+x to scan your UI."
 
 # Returns all currently created Xray.Specimen objects.
 Xray.specimens = ->

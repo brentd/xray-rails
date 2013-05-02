@@ -5,7 +5,7 @@ Xray
 
 The dev tools available to web developers in modern browsers are great. Many of us can't remember what life was like before "Inspect Element". But what we see in the compiled output sent to our browser is often the wrong level of detail - what about being able to visualize the higher level components of your UI? Controllers, templates, partials, Backbone views, etc.
 
-Xray is the missing link between the browser and your app code. Press **cmd+ctrl+x** to reveal an overlay of what files are powering your UI - click anything to open the associated file in your editor.
+Xray is the missing link between the browser and your app code. Press **cmd+ctrl+x** or **ctrl+shift+x** to reveal an overlay of what files are powering your UI - click anything to open the associated file in your editor.
 
 ![Screenshot](http://dl.dropbox.com/u/156655/Screenshots/xgf7ukh3fya-.png)
 
@@ -37,7 +37,7 @@ Then bundle and delete your cached assets:
 $ bundle && rm -rf tmp/cache/assets
 ```
 
-Restart your app, open your browser, and press `cmd+ctrl+x` to see the overlay.
+Restart your app, open your browser, and press `cmd+ctrl+x` or `ctrl+shift+x` to see the overlay.
 
 ## Configuration
 
