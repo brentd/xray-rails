@@ -5,7 +5,7 @@ Xray
 
 The dev tools available to web developers in modern browsers are great. Many of us can't remember what life was like before "Inspect Element". But what we see in the compiled output sent to our browser is often the wrong level of detail - what about being able to visualize the higher level components of your UI? Controllers, templates, partials, Backbone views, etc.
 
-Xray is the missing link between the browser and your app code. Press **cmd+ctrl+x** to reveal an overlay of what files are powering your UI - click anything to open the associated file in your editor. [Here's a GIF](http://f.cl.ly/items/1A0o3y1y3Q13103V3F1l/xray-rails-large.gif) of Xray in action.
+Xray is the missing link between the browser and your app code. Press **ctrl+shift+x(cmd+shift+x on a Mac)** to reveal an overlay of what files are powering your UI - click anything to open the associated file in your editor. [Here's a GIF](http://f.cl.ly/items/1A0o3y1y3Q13103V3F1l/xray-rails-large.gif) of Xray in action.
 
 ![Screenshot](https://dl.dropboxusercontent.com/u/156655/xray-screenshot.png)
 
@@ -36,7 +36,7 @@ Then bundle and delete your cached assets:
 $ bundle && rm -rf tmp/cache/assets
 ```
 
-Restart your app, visit it in your browser, and press `cmd+ctrl+x` to see the overlay.
+Restart your app, visit it in your browser, and press `ctrl+shift+x(cmd+shift+x on a Mac)` to see the overlay.
 
 **Note:** for Xray to insert itself into your views automatically, `config.assets.debug = true` (the default) must be set in development.rb. If you disabled this because of slow assets in Rails 3.2.13, [try this monkey patch instead](http://stackoverflow.com/a/15520932/24848) in an initializer.
 
