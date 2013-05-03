@@ -9,8 +9,8 @@ return unless window.Backbone && window.Xray
 _ensureElement = Backbone.View::_ensureElement
 Backbone.View::_ensureElement = ->
   _.defer =>
-    info = Xray.constructorInfo @constructor
-    Xray.ViewSpecimen.add @el, info
+    if info = Xray.constructorInfo @constructor
+      Xray.ViewSpecimen.add @el, info
   _ensureElement.apply(this, arguments)
 
 # Cleanup when view is removed.
