@@ -8,10 +8,12 @@ MAX_ZINDEX = 2147483647
 Xray.init = do ->
   return if Xray.initialized
   Xray.initialized = true
+  
+  is_mac = navigator.platform.toUpperCase().indexOf('MAC') isnt -1
 
   # Register keyboard shortcuts
-  $(document).keydown (e) ->
-    if e.ctrlKey and (e.metaKey or e.shiftKey) and e.keyCode is 88 # cmd+ctrl+x or shift+ctrl+x
+  $(document).keydown (e) ->  
+    if (is_mac and e.metaKey or !is_mac and e.ctrlKey) and e.shiftKey and e.keyCode is 88 # cmd+shift+x on Mac, ctr+shift+x on other platforms
       if Xray.isShowing then Xray.hide() else Xray.show()
     if Xray.isShowing and e.keyCode is 27 # esc
       Xray.hide()
@@ -22,7 +24,7 @@ Xray.init = do ->
     # Go ahead and do a pass on the DOM to find templates.
     Xray.findTemplates()
     # Ready to rock.
-    console?.log "Ready to Xray. Press cmd+ctrl+x or ctrl+shift+x to scan your UI."
+    console?.log "Ready to Xray. Press ctrl+shift+x(cmd+shift+x on a Mac) to scan your UI."
 
 # Returns all currently created Xray.Specimen objects.
 Xray.specimens = ->
