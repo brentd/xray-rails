@@ -37,8 +37,11 @@ module Xray
         status, headers, response = @app.call(env)
         if should_inject_xray?(status, headers, response)
           body = response.body.sub(/<body[^>]*>/) { "#{$~}\n#{xray_bar}" }
-          append_js!(body, 'jquery', :xray)
-          append_js!(body, 'backbone', :'xray-backbone')
+          # Inject js script tags if assets are unbundled
+          if Rails.application.config.assets.debug
+            append_js!(body, 'jquery', :xray)
+            append_js!(body, 'backbone', :'xray-backbone')
+          end
           headers['Content-Length'] = body.bytesize.to_s
         end
         [status, headers, (body ? [body] : response)]
