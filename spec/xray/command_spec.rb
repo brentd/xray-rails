@@ -5,7 +5,7 @@ describe 'Xray.open_file' do
 
   it "uses the configured editor" do
     Xray.config.stub(editor: 'cool_editor')
-    Open3.should_receive(:capture3).with("cool_editor #{file}")
+    Open3.should_receive(:capture3).with("cool_editor \"#{file}\"")
     Xray.open_file(file)
   end
 
