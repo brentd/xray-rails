@@ -70,7 +70,7 @@ Example `.xrayconfig`:
 Or for something more complex, use the `$file` placeholder.
 
 ```yaml
-:editor: "/usr/local/bin/tmux new-window 'vim "$file"'"
+:editor: "/usr/local/bin/tmux new-window 'vim $file'"
 ```
 
 ## How this works
