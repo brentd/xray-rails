@@ -66,7 +66,7 @@ module Xray
 
   # Returns augmented HTML where the source is simply wrapped in an HTML
   # comment with filepath info. Xray.js uses these comments to associate
-  # elements with the tempaltes that rendered them.
+  # elements with the templates that rendered them.
   #
   # This:
   #   <div class=".my-element">
