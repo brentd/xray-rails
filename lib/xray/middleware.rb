@@ -68,9 +68,9 @@ module Xray
 
     def should_inject_xray?(status, headers, response)
       status == 200 &&
+      !empty?(response) &&
       html_request?(headers, response) &&
       !file?(headers) &&
-      !empty?(response) &&
       !response.body.frozen?
     end
 
