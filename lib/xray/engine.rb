@@ -7,6 +7,7 @@ module Xray
   # xray.js and the xray bar into the app's response bodies.
   class Engine < ::Rails::Engine
     initializer "xray.initialize" do |app|
+      ensure_asset_pipeline_enabled! app
       app.middleware.use Xray::Middleware
 
       # Register as a Sprockets processor to augment JS files, including
@@ -82,6 +83,14 @@ module Xray
             :layout => layout
           }
         end
+      end
+    end
+
+    def ensure_asset_pipeline_enabled!(app)
+      unless app.assets
+        raise "xray-rails requires the Rails asset pipeline.
+The asset pipeline is currently disabled in this application.
+Either convert your application to use the asset pipeline, or remove xrail-rails from your Gemfile."
       end
     end
   end
