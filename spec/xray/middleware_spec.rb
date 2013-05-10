@@ -2,8 +2,9 @@ require 'spec_helper'
 
 describe Xray::Middleware do
   it "injects xray.js into the response" do
+    expected_script_include = '"/dummy/assets/xray.js?body=1"'
     visit '/'
-    expect(page.html).to include('xray.js')
+    expect(page.html).to include(expected_script_include)
   end
 
   it "injects the xray bar into the response" do
