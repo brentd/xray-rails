@@ -11,7 +11,6 @@
         </span>
       <% end %>
       <% if Xray.request_info[:view] && Xray.request_info[:controller][:name] != "Rails::InfoController" %>
-        <% binding.pry %>
         <% layout_path = lookup_context.find(Xray.request_info[:view][:layout]).identifier %>
         <span class="xray-bar-btn xray-bar-layout xray-icon-columns" data-path="<%= layout_path %>">
           <b></b>
