@@ -21,6 +21,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'jquery-rails'
   gem.add_development_dependency 'backbone-rails'
   gem.add_development_dependency 'sass-rails'
+  gem.add_development_dependency 'haml'
   gem.add_development_dependency 'eco'
   gem.add_development_dependency 'capybara', '2.1.0'
 end
