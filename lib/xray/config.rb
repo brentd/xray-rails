@@ -7,7 +7,7 @@ module Xray
   class Config
     attr_accessor :editor
 
-    CONFIG_FILE = "#{Dir.home}/.xrayconfig"
+    CONFIG_FILE = ".xrayconfig"
     DEFAULT_EDITOR = '/usr/local/bin/subl'
 
     def editor
@@ -27,11 +27,19 @@ module Xray
       {editor: editor}.to_yaml
     end
 
+    def config_file
+      if File.exists?("#{Dir.pwd}/#{CONFIG_FILE}")
+        "#{Dir.pwd}/#{CONFIG_FILE}"
+      else
+        "#{Dir.home}/#{CONFIG_FILE}"
+      end
+    end
+
     private
 
     def write_config(new_config)
       config = load_config.merge(new_config)
-      File.open(CONFIG_FILE, 'w') { |f| f.write(config.to_yaml) }
+      File.open(config_file, 'w') { |f| f.write(config.to_yaml) }
     end
 
     def load_config
@@ -39,7 +47,7 @@ module Xray
     end
 
     def local_config
-      YAML.load_file(CONFIG_FILE)
+      YAML.load_file(config_file)
     rescue
       {}
     end
