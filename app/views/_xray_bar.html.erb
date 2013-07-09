@@ -37,7 +37,7 @@
       <label for="xray-editor-input">Editor</label>
       <input id="xray-editor-input" type="text" value="<%= Xray.config.editor %>">
       <button type="submit">Save</button>
-      <p>Settings are saved to ~/.xrayconfig</p>
+      <p>Settings are saved to <%= Xray.config.config_file %></p>
   </form>
   </div>
   <%= stylesheet_link_tag :xray %>
