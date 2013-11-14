@@ -12,6 +12,7 @@ Gem::Specification.new do |gem|
   gem.files         = Dir['{app,lib}/**/*'] + ['LICENSE', 'README.md']
   gem.require_paths = ["lib"]
   gem.version       = Xray::VERSION
+  gem.license       = 'MIT'
 
   gem.add_dependency 'rails', '>= 3.1.0'
   gem.add_dependency 'coffee-rails'
