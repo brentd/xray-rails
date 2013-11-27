@@ -32,15 +32,15 @@ module Xray
           res.status = 400
         end
         res.finish
-      # Inject xray.js and friends if it's a plain ol' successful HTML request.
+      # Inject xray.js and friends if this is a successful HTML response
       else
         status, headers, response = @app.call(env)
-        if should_inject_xray?(status, headers, response)
-          body = response.body.sub(/<body[^>]*>/) { "#{$~}\n#{xray_bar}" }
+        if html_headers?(status, headers) && body = response_body(response)
+          body = body.sub(/<body[^>]*>/) { "#{$~}\n#{xray_bar}" }
           # Inject js script tags if assets are unbundled
           if Rails.application.config.assets.debug
-            append_js!(body, 'jquery', :xray)
-            append_js!(body, 'backbone', :'xray-backbone')
+            append_js!(body, 'jquery', 'xray')
+            append_js!(body, 'backbone', 'xray-backbone')
           end
           headers['Content-Length'] = body.bytesize.to_s
         end
@@ -66,26 +66,17 @@ module Xray
       end
     end
 
-    def should_inject_xray?(status, headers, response)
+    def html_headers?(status, headers)
       status == 200 &&
-      html_request?(headers, response) &&
-      !empty?(response) &&
-      !file?(headers) &&
-      !response.body.frozen?
+      headers['Content-Type'] &&
+      headers['Content-Type'].include?('text/html') &&
+      headers["Content-Transfer-Encoding"] != "binary"
     end
 
-    def empty?(response)
-      # response may be ["Not Found"], ["Move Permanently"], etc.
-      (response.is_a?(Array) && response.size <= 1) ||
-        !response.respond_to?(:body) || response.body.empty?
-    end
-
-    def file?(headers)
-      headers["Content-Transfer-Encoding"] == "binary"
-    end
-
-    def html_request?(headers, response)
-      headers['Content-Type'] && headers['Content-Type'].include?('text/html') && response.body.include?("<html")
+    def response_body(response)
+      body = ''
+      response.each { |s| body << s.to_s }
+      body
     end
   end
 end
