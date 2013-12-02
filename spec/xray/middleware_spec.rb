@@ -1,30 +1,65 @@
 require 'spec_helper'
 
-describe Xray::Middleware, "in a simple middleware stack" do
-  let(:app) {
-    html = <<-HTML.unindent
-      <html>
-        <head>
-          <script src=\"/assets/jquery.js\"></script>
-        </head>
-        <body></body>
-      </html>
-    HTML
-
-    Rack::Builder.new do
+describe Xray::Middleware, "in a middleware stack" do
+  def mock_response(status, content_type, body)
+    body = body.unindent
+    app = Rack::Builder.new do
       use Xray::Middleware
-      run lambda { |env| [200, {'Content-Type' => "text/html"}, [html]] }
+      run lambda { |env| [status, {'Content-Type' => content_type}, [body]] }
     end
-  }
-
-  def mock_request
-    Rack::MockRequest.new(app)
+    Rack::MockRequest.new(app).get('/')
   end
 
-  it "should contain the xray bar" do
-    response = mock_request.get('/')
-    expect(response.body).to have_selector('#xray-bar')
-    expect(response.body).to have_selector('script[src^="/assets/xray.js"]')
+  context "when the response is html and contains <body>" do
+    it "injects the xray bar and xray.js" do
+      response = mock_response 200, 'text/html', <<-HTML
+        <html>
+          <head>
+            <script src=\"/assets/jquery.js\"></script>
+          </head>
+          <body></body>
+        </html>
+      HTML
+      expect(response.body).to have_selector('#xray-bar')
+      expect(response.body).to have_selector('script[src^="/assets/xray.js"]')
+    end
+
+    it "does not inject xray.js if jquery is not found" do
+      response = mock_response 200, 'text/html', <<-HTML
+        <html>
+          <head></head>
+          <body></body>
+        </html>
+      HTML
+      expect(response.body).to have_selector('#xray-bar')
+      expect(response.body).to_not have_selector('script[src^="/assets/xray.js"]')
+    end
+  end
+
+  context "when the response does not contain <body>" do
+    it "does not inject xray bar or xray.js" do
+      response = mock_response 200, 'text/html', <<-HTML
+        <div>just some html</div>
+      HTML
+      expect(response.body).to_not have_selector('#xray-bar')
+      expect(response.body).to_not have_selector('script[src^="/assets/xray.js"]')
+    end
+  end
+
+  context "when the response is blank" do
+    it "does not inject xray" do
+      response = mock_response 200, 'text/html', ''
+      expect(response.body).to_not have_selector('#xray-bar')
+      expect(response.body).to_not have_selector('script[src^="/assets/xray.js"]')
+    end
+  end
+
+  context "when the response is unsuccessful" do
+    it "does not inject xray" do
+      response = mock_response 500, 'text/html', ''
+      expect(response.body).to_not have_selector('#xray-bar')
+      expect(response.body).to_not have_selector('script[src^="/assets/xray.js"]')
+    end
   end
 end
 
