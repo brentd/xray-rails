@@ -63,4 +63,16 @@ describe "Xray.augment_template" do
       <!--XRAY END 1-->
     END
   end
+
+  it "does not wrap templates beginning with a doctype" do
+    source = <<-END.unindent
+      <!DOCTYPE html>
+      <html>foo</html>
+    END
+    augmented = Xray.augment_template(source, "/path/to/file.html.erb")
+    expect(augmented).to eql <<-END.unindent
+      <!DOCTYPE html>
+      <html>foo</html>
+    END
+  end
 end
