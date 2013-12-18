@@ -35,6 +35,7 @@ module Xray
       # Inject xray.js and friends if this is a successful HTML response
       else
         status, headers, response = @app.call(env)
+
         if html_headers?(status, headers) && body = response_body(response)
           body = body.sub(/<body[^>]*>/) { "#{$~}\n#{xray_bar}" }
           # Inject js script tags if assets are unbundled
@@ -42,9 +43,19 @@ module Xray
             append_js!(body, 'jquery', 'xray')
             append_js!(body, 'backbone', 'xray-backbone')
           end
-          headers['Content-Length'] = body.bytesize.to_s
+          content_length = body.bytesize.to_s
+          # Modifying the original response obj maintains compatibility with other middlewares
+          if ActionDispatch::Response === response
+            response.body = [body]
+            response.header['Content-Length'] = content_length
+            response.to_a
+          else
+            headers['Content-Length'] = content_length
+            [status, headers, [body]]
+          end
+        else
+          [status, headers, response]
         end
-        [status, headers, (body ? [body] : response)]
       end
     end
 
