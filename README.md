@@ -80,6 +80,14 @@ Or for something more complex, use the `$file` placeholder.
 * When the overlay is shown, `xray.js` examines the file path information inserted during asset compilation.
 * Another middleware piggybacks the Rails server to respond to requests to open file paths with the user's desired editor.
 
+## Disabling Xray in particular templates
+
+Xray augments HTML templates and thus modifies them.  For some environments such as [Angular.js](http://angularjs.org/), this can cause Angular templates to stop working.  You can pass in the option `xray: false` to any render statements to ensure Xray does not augment that template.  Example:
+
+```ruby
+render 'show', xray: false
+```
+
 ## Contributing
 
 If you have an idea, open an issue and let's talk about it, or fork away and send a pull request.
