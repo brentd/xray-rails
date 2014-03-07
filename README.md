@@ -82,7 +82,7 @@ Or for something more complex, use the `$file` placeholder.
 
 ## Disabling Xray in particular templates
 
-Xray augments HTML templates and thus modifies them.  For some environments such as [Angular.js](http://angularjs.org/), this can cause Angular templates to stop working.  You can pass in the option `xray: false` to any render statements to ensure Xray does not augment that template.  Example:
+Xray augments HTML templates by wrapping their contents with HTML comments. For some environments such as [Angular.js](http://angularjs.org/), this can cause Angular templates to stop working because Angular expects only one root node in the template HTML. You can pass in the option `xray: false` to any render statements to ensure Xray does not augment that template. Example:
 
 ```ruby
 render 'show', xray: false
