@@ -41,7 +41,7 @@ Restart your app, visit it in your browser, and press **cmd+shift+x** (Mac) or *
 
 #### Note about `config.assets.debug`
 
-For Xray to insert itself into your views automatically, `config.assets.debug = true` (Rails' default) must be set in development.rb. If you disabled this because of slow assets in Rails 3.2.13, [try this monkey patch instead](http://stackoverflow.com/a/15520932/24848) in an initializer.
+For Xray to insert itself into your views automatically, `config.assets.debug = true` (Rails default) must be set in development.rb. If you disabled this because of slow assets in Rails 3.2.13, [try this monkey patch instead](http://stackoverflow.com/a/15520932/24848) in an initializer.
 
 Otherwise, you can insert Xray's scripts yourself, for example like so in application.js:
 
