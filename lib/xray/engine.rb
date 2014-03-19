@@ -92,7 +92,7 @@ module Xray
       unless app.assets
         raise "xray-rails requires the Rails asset pipeline.
 The asset pipeline is currently disabled in this application.
-Either convert your application to use the asset pipeline, or remove xrail-rails from your Gemfile."
+Either convert your application to use the asset pipeline, or remove xray-rails from your Gemfile."
       end
     end
   end
