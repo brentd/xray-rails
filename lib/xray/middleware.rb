@@ -37,7 +37,7 @@ module Xray
         status, headers, response = @app.call(env)
 
         if html_headers?(status, headers) && body = response_body(response)
-          body = body.sub(/<body[^>]*>/) { "#{$~}\n#{xray_bar}" }
+          body = body.sub(/<body[^>]*>/) { "#{$~}\n#{xray_bar(response)}" }
           # Inject js script tags if assets are unbundled
           if Rails.application.config.assets.debug
             append_js!(body, 'jquery', 'xray')
@@ -61,8 +61,10 @@ module Xray
 
     private
 
-    def xray_bar
-      ActionController::Base.new.render_to_string(:partial => '/xray_bar').html_safe
+    def xray_bar(response)
+      ac = ActionController::Base.new
+      ac.request = response.request if response.respond_to?(:request)
+      ac.render_to_string(:partial => '/xray_bar').html_safe
     end
 
     # Appends the given `script_name` after the `after_script_name`.
