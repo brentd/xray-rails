@@ -10,6 +10,9 @@ module Xray
       ensure_asset_pipeline_enabled! app
       app.middleware.use Xray::Middleware
 
+      # Required by Rails 4.1
+      app.config.assets.precompile += %w(xray.js xray.css)
+
       # Register as a Sprockets processor to augment JS files, including
       # compiled coffeescript, with filepath information. See
       # `Xray.augment_js` for details.
