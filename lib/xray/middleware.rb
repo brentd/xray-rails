@@ -73,7 +73,7 @@ module Xray
       #   <script src="/assets/jquery.js"></script>
       #   <script src="/assets/jquery-min.js"></script>
       #   <script src="/assets/jquery.min.1.9.1.js"></script>
-      html.sub!(/<script[^>]+\/#{after_script_name}([-.]{1}[\d\.]+)?([-.]{1}min)?\.js[^>]+><\/script>/) do
+      html.sub!(/<script[^>]+\/#{after_script_name}([-.]{1}[\d\.]+)?([-.]{1}min)?(-\h{32})?\.js[^>]+><\/script>/) do
         h = ActionController::Base.helpers
         "#{$~}\n" + h.javascript_include_tag(script_name)
       end
