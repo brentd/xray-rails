@@ -110,7 +110,7 @@ class Xray.Specimen
 
   makeBox: ->
     @bounds = util.computeBoundingBox(@$contents)
-    @$box = $("<div class='xray-specimen #{@constructor.name}'>").css(@bounds)
+    @$box = $("<div class='xray-specimen #{@constructor.name}'>").css(@bounds).attr('title', @path)
 
     # If the element is fixed, override the computed position with the fixed one.
     if @$contents.css('position') == 'fixed'
