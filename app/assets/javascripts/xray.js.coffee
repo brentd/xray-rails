@@ -155,7 +155,7 @@ class Xray.Overlay
     @reset()
     Xray.isShowing = true
     util.bm 'show', =>
-      @bar.$el.find('#xray-bar-togglers .xray-bar-btn').removeClass('active')
+      @bar.$el().find('#xray-bar-togglers .xray-bar-btn').removeClass('active')
       unless @$overlay.is(':visible')
         $('body').append @$overlay
         @bar.show()
@@ -163,14 +163,14 @@ class Xray.Overlay
         when 'templates'
           Xray.findTemplates()
           specimens = Xray.TemplateSpecimen.all
-          @bar.$el.find('.xray-bar-templates-toggler').addClass('active')
+          @bar.$el().find('.xray-bar-templates-toggler').addClass('active')
         when 'views'
           specimens = Xray.ViewSpecimen.all
-          @bar.$el.find('.xray-bar-views-toggler').addClass('active')
+          @bar.$el().find('.xray-bar-views-toggler').addClass('active')
         else
           Xray.findTemplates()
           specimens = Xray.specimens()
-          @bar.$el.find('.xray-bar-all-toggler').addClass('active')
+          @bar.$el().find('.xray-bar-all-toggler').addClass('active')
       for element in specimens
         continue unless element.isVisible()
         element.makeBox()
@@ -196,37 +196,51 @@ class Xray.Overlay
 # toggle buttons for showing the different types of specimens in the overlay.
 class Xray.Bar
   constructor: (el) ->
-    @$el = $(el)
-    @$el.css(zIndex: MAX_ZINDEX)
-    @$el.find('#xray-bar-controller-path .xray-bar-btn').click ->
+    @el = el
+
+  # Defer wiring up jQuery event handlers until needed and then memoize the
+  # result. If the Bar element no longer exists in the DOM, re-wire it.
+  # This allows the Bar to keep working even if e.g. Turbolinks replaces the
+  # DOM out from under us.
+  $el: ->
+    return @$el_memo if @$el_memo? && $.contains(window.document, @$el_memo[0])
+    @$el_memo = $(@el)
+    @$el_memo.css(zIndex: MAX_ZINDEX)
+    @$el_memo.find('#xray-bar-controller-path .xray-bar-btn').click ->
       Xray.open($(this).attr('data-path'))
-    @$el.find('.xray-bar-all-toggler').click       -> Xray.show()
-    @$el.find('.xray-bar-templates-toggler').click -> Xray.show('templates')
-    @$el.find('.xray-bar-views-toggler').click     -> Xray.show('views')
-    @$el.find('.xray-bar-settings-btn').click      -> Xray.toggleSettings()
+    @$el_memo.find('.xray-bar-all-toggler').click       -> Xray.show()
+    @$el_memo.find('.xray-bar-templates-toggler').click -> Xray.show('templates')
+    @$el_memo.find('.xray-bar-views-toggler').click     -> Xray.show('views')
+    @$el_memo.find('.xray-bar-settings-btn').click      -> Xray.toggleSettings()
+    @$el_memo
 
   show: ->
-    @$el.show()
+    @$el().show()
     @originalPadding = parseInt $('html').css('padding-bottom')
     if @originalPadding < 40
       $('html').css paddingBottom: 40
 
   hide: ->
-    @$el.hide()
+    @$el().hide()
     $('html').css paddingBottom: @originalPadding
 
 
 class Xray.Settings
   constructor: (el) ->
-    @$el = $(el)
-    @$el.find('form').submit @save
+    @el = el
+
+  $el: ->
+    return @$el_memo if @$el_memo? && $.contains(window.document, @$el_memo[0])
+    @$el_memo = $(@el)
+    @$el_memo.find('form').submit @save
+    @$el_memo
 
   toggle: =>
-    @$el.toggle()
+    @$el().toggle()
 
   save: (e) =>
     e.preventDefault()
-    editor = @$el.find('#xray-editor-input').val()
+    editor = @$el().find('#xray-editor-input').val()
     $.ajax
       url: '/_xray/config'
       type: 'POST'
@@ -239,7 +253,7 @@ class Xray.Settings
       $msg = $("<span class='xray-settings-success xray-settings-update-msg'>Success!</span>")
     else
       $msg = $("<span class='xray-settings-error xray-settings-update-msg'>Uh oh, something went wrong!</span>")
-    @$el.append($msg)
+    @$el().append($msg)
     $msg.delay(2000).fadeOut(500, => $msg.remove(); @toggle())
 
 
