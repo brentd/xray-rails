@@ -1,5 +1,5 @@
-Xray
-====
+Xray-rails
+==========
 
 ### Reveal your UI's bones
 
@@ -11,7 +11,7 @@ Xray is the missing link between the browser and your app code. Press **cmd+shif
 
 ## Current Support
 
-Xray is intended for Rails 3.1+ and Ruby 1.9.
+Xray is intended for Rails 3.1+ and Ruby 1.9+.
 
 So far, Xray can reveal:
 
@@ -75,10 +75,10 @@ Or for something more complex, use the `$file` placeholder.
 
 ## How this works
 
-* During asset compilation, JS files and templates are modified to contain file path information.
+* At run time, HTML responses from Rails are wrapped with HTML comments containing filepath info.
+* Additionally, JS templates and Backbone view constructors are modified during asset compilation.
 * A middleware inserts `xray.js`, `xray.css`, and the Xray bar into all successful HTML response bodies.
-* When the overlay is shown, `xray.js` examines the file path information inserted during asset compilation.
-* Another middleware piggybacks the Rails server to respond to requests to open file paths with the user's desired editor.
+* When the overlay is shown, `xray.js` examines the inserted filepath info to build the overlay.
 
 ## Disabling Xray in particular templates
 
