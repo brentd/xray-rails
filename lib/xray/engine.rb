@@ -11,7 +11,7 @@ module Xray
       app.middleware.use Xray::Middleware
 
       # Required by Rails 4.1
-      app.config.assets.precompile += %w(xray.js xray.css)
+      app.config.assets.precompile += %w(xray.js xray-backbone.js xray.css)
 
       # Register as a Sprockets processor to augment JS files, including
       # compiled coffeescript, with filepath information. See
