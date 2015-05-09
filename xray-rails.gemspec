@@ -24,5 +24,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'sass-rails'
   gem.add_development_dependency 'haml'
   gem.add_development_dependency 'eco'
-  gem.add_development_dependency 'capybara', '2.1.0'
+  gem.add_development_dependency 'capybara'
 end
