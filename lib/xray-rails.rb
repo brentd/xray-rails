@@ -84,7 +84,7 @@ module Xray
       return source
     end
     # skim doesn't allow html comments, so use skim's comment syntax if it's skim
-    if path =~ /\.(skim)(\.|$)/
+    if path =~ /\.(skim|hamlc)(\.|$)/
       augmented = "/!XRAY START #{id} #{path}\n#{source}\n/!XRAY END #{id}"
     else
       augmented = "<!--XRAY START #{id} #{path}-->\n#{source}\n<!--XRAY END #{id}-->"
