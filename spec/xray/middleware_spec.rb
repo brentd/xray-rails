@@ -21,7 +21,7 @@ describe Xray::Middleware, "in a middleware stack" do
         </html>
       HTML
       expect(response.body).to have_selector('#xray-bar')
-      expect(response.body).to have_selector('script[src^="/assets/xray.js"]')
+      expect(response.body).to have_selector('script[src^="/assets/xray"]')
     end
 
     it "does not inject xray.js if jquery is not found" do
@@ -32,7 +32,7 @@ describe Xray::Middleware, "in a middleware stack" do
         </html>
       HTML
       expect(response.body).to have_selector('#xray-bar')
-      expect(response.body).to_not have_selector('script[src^="/assets/xray.js"]')
+      expect(response.body).to_not have_selector('script[src^="/assets/xray"]')
     end
   end
 
@@ -42,7 +42,7 @@ describe Xray::Middleware, "in a middleware stack" do
         <div>just some html</div>
       HTML
       expect(response.body).to_not have_selector('#xray-bar')
-      expect(response.body).to_not have_selector('script[src^="/assets/xray.js"]')
+      expect(response.body).to_not have_selector('script[src^="/assets/xray"]')
     end
   end
 
@@ -50,7 +50,7 @@ describe Xray::Middleware, "in a middleware stack" do
     it "does not inject xray" do
       response = mock_response 200, 'text/html', ''
       expect(response.body).to_not have_selector('#xray-bar')
-      expect(response.body).to_not have_selector('script[src^="/assets/xray.js"]')
+      expect(response.body).to_not have_selector('script[src^="/assets/xray"]')
     end
   end
 
@@ -58,7 +58,7 @@ describe Xray::Middleware, "in a middleware stack" do
     it "does not inject xray" do
       response = mock_response 500, 'text/html', ''
       expect(response.body).to_not have_selector('#xray-bar')
-      expect(response.body).to_not have_selector('script[src^="/assets/xray.js"]')
+      expect(response.body).to_not have_selector('script[src^="/assets/xray"]')
     end
   end
 end
@@ -66,7 +66,7 @@ end
 describe Xray::Middleware, "in a Rails app" do
   it "injects xray.js into the response" do
     visit '/'
-    expect(page).to have_selector('script[src^="/assets/xray.js"]')
+    expect(page).to have_selector('script[src^="/assets/xray"]')
   end
 
   it "injects the xray bar into the response" do
@@ -76,7 +76,7 @@ describe Xray::Middleware, "in a Rails app" do
 
   it "doesn't mess with non-html requests" do
     visit '/non_html'
-    expect(page.html).not_to include('xray.js')
+    expect(page.html).not_to include('xray')
     expect(page).not_to have_selector('#xray-bar')
   end
 
