@@ -32,17 +32,23 @@ module Xray
           res.status = 400
         end
         res.finish
+
       # Inject xray.js and friends if this is a successful HTML response
       else
         status, headers, response = @app.call(env)
 
         if html_headers?(status, headers) && body = response_body(response)
-          body = body.sub(/<body[^>]*>/) { "#{$~}\n#{xray_bar(response)}" }
-          # Inject js script tags if assets are unbundled
-          if Rails.application.config.assets.debug
-            append_js!(body, 'jquery', 'xray')
-            append_js!(body, 'backbone', 'xray-backbone')
+          if body =~ script_matcher('xray')
+            # Inject the xray bar if xray.js is already on the page
+            inject_xray_bar!(body)
+          elsif Rails.application.config.assets.debug
+            # Otherwise try to inject xray.js if assets are unbundled
+            if append_js!(body, 'jquery', 'xray')
+              append_js!(body, 'backbone', 'xray-backbone')
+              inject_xray_bar!(body)
+            end
           end
+
           content_length = body.bytesize.to_s
 
           # For rails v4.2.0+ compatibility
@@ -67,22 +73,24 @@ module Xray
 
     private
 
-    def xray_bar(response)
+    def inject_xray_bar!(html)
+      html.sub!(/<body[^>]*>/) { "#{$~}\n#{render_xray_bar}" }
+    end
+
+    def render_xray_bar
       ac = ActionController::Base.new
-      ac.request = response.request if response.respond_to?(:request)
       ac.render_to_string(:partial => '/xray_bar').html_safe
     end
 
-    # Appends the given `script_name` after the `after_script_name`.
-    def append_js!(html, after_script_name, script_name)
-      # Matches:
-      #   <script src="/assets/jquery.js"></script>
-      #   <script src="/assets/jquery-min.js"></script>
-      #   <script src="/assets/jquery.min.1.9.1.js"></script>
-      #   <script src="/assets/jquery.min.1.9.1-89255b9dbf3de2fbaa6754b3a00db431.js"></script>
-      script_pattern = /
+    # Matches:
+    #   <script src="/assets/jquery.js"></script>
+    #   <script src="/assets/jquery-min.js"></script>
+    #   <script src="/assets/jquery.min.1.9.1.js"></script>
+    #   <script src="/assets/jquery.min.1.9.1-89255b9dbf3de2fbaa6754b3a00db431.js"></script>
+    def script_matcher(script_name)
+      /
         <script[^>]+
-        \/#{after_script_name} # Name of the script itself
+        \/#{script_name}
         ([-.]{1}[\d\.]+)?      # Optional version identifier (e.g. -1.9.1)
         ([-.]{1}min)?          # Optional -min suffix
         (\.self)?              # Sprockets 3 appends .self to the filename
@@ -90,10 +98,17 @@ module Xray
         \.js                   # Must have .js extension
         [^>]+><\/script>
       /x
-      html.sub!(script_pattern) do
-        h = ActionController::Base.helpers
-        "#{$~}\n" + h.javascript_include_tag(script_name)
+    end
+
+    # Appends the given `script_name` after the `after_script_name`.
+    def append_js!(html, after_script_name, script_name)
+      html.sub!(script_matcher(after_script_name)) do
+        "#{$~}\n" + helper.javascript_include_tag(script_name)
       end
+    end
+
+    def helper
+      ActionController::Base.helpers
     end
 
     def html_headers?(status, headers)
