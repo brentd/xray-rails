@@ -34,9 +34,9 @@ module Xray
           source = render_without_xray(*args, &block)
 
           suitable_template = !(view.respond_to?(:mailer) && view.mailer) &&
+                              !path.include?('_xray_bar') &&
                               path =~ /\.(html|slim|haml|hamlc)(\.|$)/ &&
-                              !path.match(/\.(js|json|css)\./) &&
-                              !path.include?('_xray_bar')
+                              path !~ /\.(js|json|css)(\.|$)/
 
           options = args.last.kind_of?(Hash) ? args.last : {}
 
