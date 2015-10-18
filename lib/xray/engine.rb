@@ -61,8 +61,6 @@ module Xray
         action_name     = event.payload[:action]
         path            = ActiveSupport::Dependencies.search_for_file(controller_name.underscore)
 
-        # Reset the request info hash for this request.
-        # NOTE: Nothing about this is thread-safe. Could this affect anyone in dev mode?
         Xray.request_info.clear
 
         Xray.request_info[:controller] = {

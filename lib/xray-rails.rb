@@ -13,9 +13,8 @@ module Xray
 
   # Used to collect request information during each request cycle for use in
   # the Xray bar.
-  # TODO: there's nothing thread-safe about this. Not sure how big of a deal that is.
   def self.request_info
-    @request_info ||= {}
+    Thread.current[:request_info] ||= {}
   end
 
   # Patterns for the kind of JS constructors Xray is interested in knowing the
