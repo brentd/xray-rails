@@ -85,5 +85,10 @@ describe Xray::Middleware, "in a Rails app" do
       visit '/made_with_haml.json'
       expect(page.html).not_to include('<!--XRAY START')
     end
+
+    it "does not add html comments to mailer templates" do
+      mail = TestMailer.hello
+      expect(mail.body.raw_source).not_to include('<!--XRAY START')
+    end
   end
 end

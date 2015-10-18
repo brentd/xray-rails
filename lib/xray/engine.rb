@@ -30,9 +30,16 @@ module Xray
       ActionView::Template.class_eval do
         def render_with_xray(*args, &block)
           path = identifier
+          view = args.first
           source = render_without_xray(*args, &block)
-          suitable_template = path =~ /\.(html|slim|haml|hamlc)(\.|$)/ && !path.match(/\.(js|json|css)\./) && !path.include?('_xray_bar')
+
+          suitable_template = !(view.respond_to?(:mailer) && view.mailer) &&
+                              path =~ /\.(html|slim|haml|hamlc)(\.|$)/ &&
+                              !path.match(/\.(js|json|css)\./) &&
+                              !path.include?('_xray_bar')
+
           options = args.last.kind_of?(Hash) ? args.last : {}
+
           if suitable_template && !(options.has_key?(:xray) && (options[:xray] == false))
             Xray.augment_template(source, path)
           else
