@@ -34,6 +34,19 @@ describe Xray::Middleware, "in a middleware stack" do
       expect(response.body).to_not have_selector('#xray-bar')
       expect(response.body).to_not have_selector('script[src^="/assets/xray"]')
     end
+
+    it "does inject xray.js or the xray bar if jquery2 is found" do
+      response = mock_response 200, 'text/html', <<-HTML
+      <html>
+        <head>
+          <script src=\"/assets/jquery2.js\"></script>
+        </head>
+        <body></body>
+      </html>
+      HTML
+      expect(response.body).to have_selector('#xray-bar')
+      expect(response.body).to have_selector('script[src^="/assets/xray"]')
+    end
   end
 
   context "when the response does not contain <body>" do
