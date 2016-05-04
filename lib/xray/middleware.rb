@@ -91,6 +91,7 @@ module Xray
       /
         <script[^>]+
         \/#{script_name}
+        (2)?                   # Optional 2 for jQuery2 format
         ([-.]{1}[\d\.]+)?      # Optional version identifier (e.g. -1.9.1)
         ([-.]{1}min)?          # Optional -min suffix
         (\.self)?              # Sprockets 3 appends .self to the filename
