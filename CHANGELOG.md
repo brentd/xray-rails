@@ -11,6 +11,12 @@ lesser changes or bug fixes.
 ## [Unreleased][]
 
 * Your contribution here!
+
+## [0.1.19][] (2016-05-06)
+
+* Previous releases of xray-rails had a file permissions issue that caused a
+  "can't load lib/xray/middleware" error on some systems. This should now be
+  fixed. [#59](https://github.com/brentd/xray-rails/pull/59)
 * The xray-rails JavaScript is now properly injected after `jquery2`. This means
   that projects using jQuery2 should now work with xray-rails out of the box.
   [#64](https://github.com/brentd/xray-rails/pull/64) @nextekcarl
@@ -33,7 +39,8 @@ lesser changes or bug fixes.
 
 
 [Semver]: http://semver.org
-[Unreleased]: https://github.com/brentd/xray-rails/compare/v0.1.18...HEAD
+[Unreleased]: https://github.com/brentd/xray-rails/compare/v0.1.19...HEAD
+[0.1.19]: https://github.com/brentd/xray-rails/compare/v0.1.18...v0.1.19
 [0.1.18]: https://github.com/brentd/xray-rails/compare/v0.1.17...v0.1.18
 [0.1.17]: https://github.com/brentd/xray-rails/compare/v0.1.16...v0.1.17
 [0.1.16]: https://github.com/brentd/xray-rails/compare/v0.1.15...v0.1.16
