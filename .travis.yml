@@ -1,4 +1,6 @@
 language: ruby
+env:
+  - RAILS_ENV=development
 rvm:
   - 2.1
   - 2.2
