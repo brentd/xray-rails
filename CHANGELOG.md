@@ -11,6 +11,8 @@ lesser changes or bug fixes.
 ## [Unreleased][]
 
 * Your contribution here!
+* Added support for Rails 5.0.0.rc1.
+  [#70](https://github.com/brentd/xray-rails/pull/70)
 
 ## [0.1.19][] (2016-05-06)
 
