@@ -59,7 +59,7 @@ module Xray
           # Modifying the original response obj maintains compatibility with other middlewares
           if ActionDispatch::Response === response
             response.body = [body]
-            response.header['Content-Length'] = content_length
+            response.header['Content-Length'] = content_length unless response.try(:committed?)
             response.to_a
           else
             headers['Content-Length'] = content_length
@@ -78,8 +78,14 @@ module Xray
     end
 
     def render_xray_bar
-      ac = ActionController::Base.new
-      ac.render_to_string(:partial => '/xray_bar').html_safe
+      if ApplicationController.respond_to?(:render)
+        # Rails 5
+        ApplicationController.render(:partial => "/xray_bar").html_safe
+      else
+        # Rails <= 4.2
+        ac = ActionController::Base.new
+        ac.render_to_string(:partial => '/xray_bar').html_safe
+      end
     end
 
     # Matches:
