@@ -11,6 +11,9 @@ lesser changes or bug fixes.
 ## [Unreleased][]
 
 * Your contribution here!
+
+## [0.1.20][] (2016-05-18)
+
 * Added support for Rails 5.0.0.rc1.
   [#70](https://github.com/brentd/xray-rails/pull/70)
 
@@ -41,7 +44,8 @@ lesser changes or bug fixes.
 
 
 [Semver]: http://semver.org
-[Unreleased]: https://github.com/brentd/xray-rails/compare/v0.1.19...HEAD
+[Unreleased]: https://github.com/brentd/xray-rails/compare/v0.1.20...HEAD
+[0.1.20]: https://github.com/brentd/xray-rails/compare/v0.1.19...v0.1.20
 [0.1.19]: https://github.com/brentd/xray-rails/compare/v0.1.18...v0.1.19
 [0.1.18]: https://github.com/brentd/xray-rails/compare/v0.1.17...v0.1.18
 [0.1.17]: https://github.com/brentd/xray-rails/compare/v0.1.16...v0.1.17
