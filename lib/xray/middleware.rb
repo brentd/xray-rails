@@ -59,7 +59,7 @@ module Xray
           # Modifying the original response obj maintains compatibility with other middlewares
           if ActionDispatch::Response === response
             response.body = [body]
-            response.header['Content-Length'] = content_length unless response.try(:committed?)
+            response.header['Content-Length'] = content_length unless committed?(response)
             response.to_a
           else
             headers['Content-Length'] = content_length
@@ -72,6 +72,10 @@ module Xray
     end
 
     private
+
+    def committed?(response)
+      response.respond_to?(:committed?) && response.committed?
+    end
 
     def inject_xray_bar!(html)
       html.sub!(/<body[^>]*>/) { "#{$~}\n#{render_xray_bar}" }

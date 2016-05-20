@@ -11,6 +11,8 @@ lesser changes or bug fixes.
 ## [Unreleased][]
 
 * Your contribution here!
+* Fix a regression in 0.1.20 that broke Rails 3.2 apps
+  [#72](https://github.com/brentd/xray-rails/pull/72)
 
 ## [0.1.20][] (2016-05-18)
 
