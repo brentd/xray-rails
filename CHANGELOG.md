@@ -11,6 +11,9 @@ lesser changes or bug fixes.
 ## [Unreleased][]
 
 * Your contribution here!
+
+## [0.1.21][] (2016-05-21)
+
 * Fix a regression in 0.1.20 that broke Rails 3.2 apps
   [#72](https://github.com/brentd/xray-rails/pull/72)
 
@@ -46,7 +49,8 @@ lesser changes or bug fixes.
 
 
 [Semver]: http://semver.org
-[Unreleased]: https://github.com/brentd/xray-rails/compare/v0.1.20...HEAD
+[Unreleased]: https://github.com/brentd/xray-rails/compare/v0.1.21...HEAD
+[0.1.21]: https://github.com/brentd/xray-rails/compare/v0.1.20...v0.1.21
 [0.1.20]: https://github.com/brentd/xray-rails/compare/v0.1.19...v0.1.20
 [0.1.19]: https://github.com/brentd/xray-rails/compare/v0.1.18...v0.1.19
 [0.1.18]: https://github.com/brentd/xray-rails/compare/v0.1.17...v0.1.18
