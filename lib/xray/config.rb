@@ -8,7 +8,13 @@ module Xray
     attr_accessor :editor
 
     CONFIG_FILE = ".xrayconfig"
-    DEFAULT_EDITOR = '/usr/local/bin/subl'
+
+    def default_editor
+      ENV['GEM_EDITOR'] ||
+        ENV['VISUAL'] ||
+        ENV['EDITOR'] ||
+        '/usr/local/bin/subl'
+    end
 
     def editor
       load_config[:editor]
@@ -53,8 +59,7 @@ module Xray
     end
 
     def default_config
-      { editor: DEFAULT_EDITOR }
+      { editor: default_editor }
     end
-
   end
 end
