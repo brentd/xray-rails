@@ -59,17 +59,18 @@ Backbone support via `xray-backbone` is optional.
 
 ## Configuration
 
-By default, Xray will open files with Sublime Text, looking for `/usr/local/bin/subl`.
+By default, Xray will check a few environment variables to determine
+which editor to open files in: `$GEM_EDITOR`, `$VISUAL`, then
+`$EDITOR` before falling back to `/usr/local/bin/subl`.
 
-You can configure this to be your editor of choice in Xray's UI, or create `~/.xrayconfig`, a YAML file.
-
-Example `.xrayconfig`:
+You can configure your editor of choice either by setting one of these
+variables, or in Xray's UI, or in an `~/.xrayconfig` YAML file:
 
 ```yaml
 :editor: '/usr/local/bin/mate'
 ```
 
-Or for something more complex, use the `$file` placeholder.
+For something more complex, use the `$file` placeholder.
 
 ```yaml
 :editor: "/usr/local/bin/tmux new-window 'vim $file'"
