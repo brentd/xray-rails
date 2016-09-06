@@ -1,0 +1,8 @@
+language: ruby
+env:
+  - RAILS_ENV=development
+rvm:
+  - 2.1
+  - 2.2
+  - 2.3.1
+before_install: gem install bundler
