@@ -2,6 +2,7 @@ Xray-rails
 ==========
 
 [![Gem Version](https://badge.fury.io/rb/xray-rails.svg)](https://rubygems.org/gems/xray-rails)
+[![Build Status](https://travis-ci.org/brentd/xray-rails.svg?branch=master)](https://travis-ci.org/brentd/xray-rails)
 
 ### Reveal your UI's bones
 
