@@ -12,6 +12,14 @@ lesser changes or bug fixes.
 
 * Your contribution here!
 
+## [0.1.22][] (2016-09-08)
+
+* If you have not explicitly set an editor, xray-rails now chooses a default
+  editor by using the following environment variables: `GEM_EDITOR`, `VISUAL`,
+  and `EDITOR`. To explicitly set the editor, use `~/.xrayconfig` as explained
+  in the [configuration section](https://github.com/brentd/xray-rails#configuration)
+  of the README.
+
 ## [0.1.21][] (2016-05-21)
 
 * Fix a regression in 0.1.20 that broke Rails 3.2 apps
@@ -49,7 +57,8 @@ lesser changes or bug fixes.
 
 
 [Semver]: http://semver.org
-[Unreleased]: https://github.com/brentd/xray-rails/compare/v0.1.21...HEAD
+[Unreleased]: https://github.com/brentd/xray-rails/compare/v0.1.22...HEAD
+[0.1.22]: https://github.com/brentd/xray-rails/compare/v0.1.21...v0.1.22
 [0.1.21]: https://github.com/brentd/xray-rails/compare/v0.1.20...v0.1.21
 [0.1.20]: https://github.com/brentd/xray-rails/compare/v0.1.19...v0.1.20
 [0.1.19]: https://github.com/brentd/xray-rails/compare/v0.1.18...v0.1.19
