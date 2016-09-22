@@ -52,15 +52,39 @@ module Xray
         alias_method_chain :render, :xray
       end
 
-      # Augment JS templates
-      app.assets.register_preprocessor 'application/javascript', :xray do |context, source|
-        path = context.pathname.to_s
-        if path =~ /^#{app.root}.+\.(jst)(\.|$)/
-          Xray.augment_template(source, path)
-        else
-          source
+      # Sprockets preprocessor interface which supports all versions of Sprockets.
+      # See: https://github.com/rails/sprockets/blob/master/guides/extending_sprockets.md#supporting-all-versions-of-sprockets-in-processors
+      class JavascriptPreprocessor
+        def initialize(filename, &block)
+          @filename = filename
+          @source   = block.call
+        end
+
+        def render(context, empty_hash_wtf)
+          self.class.run(@filename, @source, context)
+        end
+
+        def self.run(filename, source, context)
+          path = context.pathname.to_s
+          if path =~ /^#{Rails.root}.+\.(jst)(\.|$)/
+            Xray.augment_template(source, path)
+          else
+            source
+          end
+        end
+
+        def self.call(input)
+          filename = input[:filename]
+          source   = input[:data]
+          context  = input[:environment].context_class.new(input)
+
+          result = run(filename, source, context)
+          context.metadata.merge(data: result)
         end
       end
+
+      # Augment JS templates
+      app.assets.register_preprocessor 'application/javascript', JavascriptPreprocessor
 
       # This event is called near the beginning of a request cycle. We use it to
       # collect information about the controller and action that is responding, for
