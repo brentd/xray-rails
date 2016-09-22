@@ -10,23 +10,11 @@ module Xray
       app.middleware.use Xray::Middleware
 
       # Required by Rails 4.1
-      app.config.assets.precompile += %w(xray.js xray-backbone.js xray.css)
+      app.config.assets.precompile += %w(xray.js xray.css)
     end
 
     config.after_initialize do |app|
       ensure_asset_pipeline_enabled! app
-
-      # Register as a Sprockets processor to augment JS files, including
-      # compiled coffeescript, with filepath information. See
-      # `Xray.augment_js` for details.
-      app.assets.register_postprocessor 'application/javascript', :xray do |context, data|
-        path = context.pathname.to_s
-        if path =~ /^#{app.root}.+\.(js|coffee)(\.|$)/
-          Xray.augment_js(data, path)
-        else
-          data
-        end
-      end
 
       # Monkey patch ActionView::Template to augment server-side templates
       # with filepath information. See `Xray.augment_template` for details.

@@ -4,9 +4,9 @@ module Xray
   OPEN_PATH = '/_xray/open'
   UPDATE_CONFIG_PATH = '/_xray/config'
 
-  # This middleware is responsible for injecting xray.js, xray-backbone.js, and
-  # the Xray bar into the app's pages. It also listens for requests to open files
-  # with the user's editor.
+  # This middleware is responsible for injecting xray.js and the Xray bar into
+  # the app's pages. It also listens for requests to open files with the user's
+  # editor.
   class Middleware
     def initialize(app)
       @app = app
@@ -44,7 +44,6 @@ module Xray
           elsif Rails.application.config.assets.debug
             # Otherwise try to inject xray.js if assets are unbundled
             if append_js!(body, 'jquery', 'xray')
-              append_js!(body, 'backbone', 'xray-backbone')
               inject_xray_bar!(body)
             end
           end
