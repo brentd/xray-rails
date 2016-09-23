@@ -1,53 +1,5 @@
 require 'spec_helper'
 
-describe "Xray.augment_js" do
-  it "finds and augments constructors created with extend()" do
-    source = <<-END
-      MyView = Backbone.View.extend({
-        initialize: function() {
-        }
-      });
-    END
-    augmented = Xray.augment_js(source, "/path/to/file.js")
-    expect(augmented).to eql <<-END
-      MyView = (window.XrayPaths||(window.XrayPaths={}))['{"name":"MyView","path":"/path/to/file.js"}'] = Backbone.View.extend({
-        initialize: function() {
-        }
-      });
-    END
-  end
-
-  it "finds and augments constructors created by coffeescript" do
-    source = <<-END
-      MyView = (function(_super) {
-        __extends(MyView, _super);
-
-        function MyView() {
-          _ref = MyView.__super__.constructor.apply(this, arguments);
-          return _ref;
-        }
-
-        return MyView;
-
-      })(Backbone.View);
-    END
-    augmented = Xray.augment_js(source, "/path/to/file.js")
-    expect(augmented).to eql <<-END
-      MyView = (window.XrayPaths||(window.XrayPaths={}))['{"name":"MyView","path":"/path/to/file.js"}'] = (function(_super) {
-        __extends(MyView, _super);
-
-        function MyView() {
-          _ref = MyView.__super__.constructor.apply(this, arguments);
-          return _ref;
-        }
-
-        return MyView;
-
-      })(Backbone.View);
-    END
-  end
-end
-
 describe "Xray.augment_template" do
   it "wraps HTML source with comments containing the path" do
     Xray.stub(next_id: 1)

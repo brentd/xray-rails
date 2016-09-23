@@ -12,6 +12,14 @@ lesser changes or bug fixes.
 
 * Your contribution here!
 
+## [0.2.0][2016-09-22]
+
+* Removed support for Backbone-rendered templates. This feature was particularly
+  complex and prone to failure. It will more than likely return in some form in
+  the future - for now, if your workflow depends on it, don't upgrade to 0.2.0.
+* Removed the dependency on coffee-rails.
+* Fixed deprecation warnings from Sprockets 4.
+
 ## [0.1.23][] (2016-09-22)
 
 * Add a post-install message regarding future removal of Backbone support.

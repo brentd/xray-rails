@@ -7,6 +7,13 @@ task "server" do
   exec "script/server"
 end
 
+namespace :assets do
+  desc "Compile xray.js.coffee"
+  task "compile" do
+    exec "coffee -cp app/assets/javascripts/xray.js.coffee > app/assets/javascripts/xray.js"
+  end
+end
+
 desc "Run all examples"
 RSpec::Core::RakeTask.new(:spec) do |t|
   # TODO: uncomment this and fix warnings
