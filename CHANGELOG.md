@@ -12,7 +12,7 @@ lesser changes or bug fixes.
 
 * Your contribution here!
 
-## [0.2.0][2016-09-22]
+## [0.2.0][] (2016-09-23)
 
 * Removed support for Backbone-rendered templates. This feature was particularly
   complex and prone to failure. It will more than likely return in some form in
@@ -20,7 +20,7 @@ lesser changes or bug fixes.
 * Removed the dependency on coffee-rails.
 * Fixed deprecation warnings from Sprockets 4.
 
-## [0.1.23][] (2016-09-22)
+## [0.1.23][] (2016-09-23)
 
 * Add a post-install message regarding future removal of Backbone support.
 
