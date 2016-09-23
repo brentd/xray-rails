@@ -14,6 +14,11 @@ Gem::Specification.new do |gem|
   gem.version       = Xray::VERSION
   gem.license       = 'MIT'
 
+  gem.post_install_message = <<-MESSAGE
+Backbone.js support will be removed from xray-rails in version 0.2.0.
+If you need backbone.js support, lock xray-rails to 0.1.22 to avoid breaking changes.
+MESSAGE
+
   gem.add_dependency 'rails', '>= 3.1.0'
   gem.add_dependency 'coffee-rails'
 

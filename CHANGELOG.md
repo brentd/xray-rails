@@ -12,6 +12,10 @@ lesser changes or bug fixes.
 
 * Your contribution here!
 
+## [0.1.23][] (2016-09-22)
+
+* Add a post-install message regarding future removal of Backbone support.
+
 ## [0.1.22][] (2016-09-08)
 
 * If you have not explicitly set an editor, xray-rails now chooses a default
