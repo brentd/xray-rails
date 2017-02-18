@@ -6,6 +6,32 @@ module Xray
   # in the browser. It also hooks in a middleware responsible for injecting
   # xray.js and the xray bar into the app's response bodies.
   class Engine < ::Rails::Engine
+    module ActionViewPatch
+      def render(*args, &block)
+        path = identifier
+        view = args.first
+
+        if Module.respond_to?(:prepend)
+          source = super(*args, &block)
+        else
+          source = render_without_xray(*args, &block)
+        end
+
+        suitable_template = !(view.respond_to?(:mailer) && view.mailer) &&
+                            !path.include?('_xray_bar') &&
+                            path =~ /\.(html|slim|haml|hamlc)(\.|$)/ &&
+                            path !~ /\.(js|json|css)(\.|$)/
+
+        options = args.last.kind_of?(Hash) ? args.last : {}
+
+        if suitable_template && !(options.has_key?(:xray) && (options[:xray] == false))
+          Xray.augment_template(source, path)
+        else
+          source
+        end
+      end
+    end
+
     initializer "xray.initialize" do |app|
       app.middleware.use Xray::Middleware
 
@@ -19,25 +45,13 @@ module Xray
       # Monkey patch ActionView::Template to augment server-side templates
       # with filepath information. See `Xray.augment_template` for details.
       ActionView::Template.class_eval do
-        def render_with_xray(*args, &block)
-          path = identifier
-          view = args.first
-          source = render_without_xray(*args, &block)
-
-          suitable_template = !(view.respond_to?(:mailer) && view.mailer) &&
-                              !path.include?('_xray_bar') &&
-                              path =~ /\.(html|slim|haml|hamlc)(\.|$)/ &&
-                              path !~ /\.(js|json|css)(\.|$)/
-
-          options = args.last.kind_of?(Hash) ? args.last : {}
-
-          if suitable_template && !(options.has_key?(:xray) && (options[:xray] == false))
-            Xray.augment_template(source, path)
-          else
-            source
-          end
+        if Module.respond_to?(:prepend)
+          prepend Xray::Engine::ActionViewPatch
+        else
+          include Xray::Engine::ActionViewPatch
+          Xray::Engine::ActionViewPatch.send :alias_method, :render_with_xray, :render
+          alias_method_chain :render, :xray
         end
-        alias_method_chain :render, :xray
       end
 
       # Sprockets preprocessor interface which supports all versions of Sprockets.
