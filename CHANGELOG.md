@@ -10,6 +10,7 @@ lesser changes or bug fixes.
 
 ## [Unreleased][]
 
+* Use `Module#prepend` if available to remove `alias_method_chain` deprecation warning.
 * Your contribution here!
 
 ## [0.2.0][] (2016-09-23)
