@@ -1,6 +1,7 @@
 require "json"
 require "active_support/all"
 require_relative "xray/version"
+require_relative "xray/aliasing"
 require_relative "xray/config"
 require_relative "xray/middleware"
 

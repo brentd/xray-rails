@@ -11,6 +11,7 @@ lesser changes or bug fixes.
 ## [Unreleased][]
 
 * Your contribution here!
+* Remove `alias_method_chain` and make xray-rails compatible with Rails 5.1.
 
 ## [0.2.0][] (2016-09-23)
 
