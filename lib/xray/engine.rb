@@ -19,6 +19,8 @@ module Xray
       # Monkey patch ActionView::Template to augment server-side templates
       # with filepath information. See `Xray.augment_template` for details.
       ActionView::Template.class_eval do
+        extend Xray::Aliasing
+
         def render_with_xray(*args, &block)
           path = identifier
           view = args.first
@@ -37,7 +39,7 @@ module Xray
             source
           end
         end
-        alias_method_chain :render, :xray
+        xray_method_alias :render
       end
 
       # Sprockets preprocessor interface which supports all versions of Sprockets.
