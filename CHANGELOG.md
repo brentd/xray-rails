@@ -10,6 +10,7 @@ lesser changes or bug fixes.
 
 ## [Unreleased][]
 
+* Your contribution here!
 * Include xray.js when using jQuery3
   [#84](https://github.com/brentd/xray-rails/pull/84)
 
