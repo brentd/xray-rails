@@ -8,9 +8,9 @@ Xray-rails
 
 The dev tools available to web developers in modern browsers are great. Many of us can't remember what life was like before "Inspect Element". But what we see in the compiled output sent to our browser is often the wrong level of detail - what about visualizing the higher level components of your UI? Controllers, view templates, partials, JS templates, etc.
 
-Xray is the missing link between the browser and your app code. Press **cmd+shift+x** (Mac) or **ctrl+shift+x** to reveal an overlay of the files that rendered your UI, and click anything to open the file in your editor. [See Xray in action](http://f.cl.ly/items/1A0o3y1y3Q13103V3F1l/xray-rails-large.gif).
+Xray is the missing link between the browser and your app code. Press **cmd+shift+x** (Mac) or **ctrl+shift+x** to reveal an overlay of the files that rendered your UI, and click anything to open the file in your editor.
 
-![Screenshot](https://dl.dropboxusercontent.com/u/156655/xray-screenshot.png)
+![Screenshot](example/screenshot.png)
 
 ## Current Support
 
