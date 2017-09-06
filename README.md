@@ -10,7 +10,7 @@ The dev tools available to web developers in modern browsers are great. Many of 
 
 Xray is the missing link between the browser and your app code. Press **cmd+shift+x** (Mac) or **ctrl+shift+x** to reveal an overlay of the files that rendered your UI, and click anything to open the file in your editor.
 
-![Screenshot](https://dl.dropboxusercontent.com/u/156655/xray-screenshot.png)
+![Screenshot](example/screenshot.png)
 
 ## Current Support
 
