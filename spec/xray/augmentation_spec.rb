@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "Xray.augment_template" do
   it "wraps HTML source with comments containing the path" do
-    Xray.stub(next_id: 1)
+    allow(Xray).to receive(:next_id).and_return(1)
     source = <<-END.unindent
       <div class="container">
       </div>
