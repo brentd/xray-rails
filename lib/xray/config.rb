@@ -5,8 +5,6 @@ module Xray
   end
 
   class Config
-    attr_accessor :editor
-
     CONFIG_FILE = ".xrayconfig"
 
     def default_editor
