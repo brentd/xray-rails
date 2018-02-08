@@ -5,8 +5,6 @@ module Xray
   end
 
   class Config
-    attr_accessor :editor
-
     CONFIG_FILE = ".xrayconfig"
 
     def default_editor
@@ -34,7 +32,7 @@ module Xray
     end
 
     def config_file
-      if File.exists?("#{Dir.pwd}/#{CONFIG_FILE}")
+      if File.exist?("#{Dir.pwd}/#{CONFIG_FILE}")
         "#{Dir.pwd}/#{CONFIG_FILE}"
       else
         "#{Dir.home}/#{CONFIG_FILE}"
