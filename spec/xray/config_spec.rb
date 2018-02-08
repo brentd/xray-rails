@@ -39,7 +39,7 @@ describe Xray::Config do
     end
 
     it "should use $PROJECT/.xrayconfig if it exists" do
-      File.stub(:exists?).and_return(true)
+      File.stub(:exist?).and_return(true)
       Dir.stub(:pwd).and_return('/project')
       Xray.config.config_file.should eq("/project/.xrayconfig")
     end
