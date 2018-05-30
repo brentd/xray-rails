@@ -77,13 +77,17 @@ For something more complex, use the `$file` placeholder.
 * A middleware inserts `xray.js`, `xray.css`, and the Xray bar into all successful HTML response bodies.
 * When the overlay is shown, `xray.js` examines the inserted filepath info to build the overlay.
 
-## Disabling Xray in particular templates
+## Disabling Xray
 
-Xray augments HTML templates by wrapping their contents with HTML comments. For some environments such as [Angular.js](http://angularjs.org/), this can cause Angular templates to stop working because Angular expects only one root node in the template HTML. You can pass in the option `xray: false` to any render statements to ensure Xray does not augment that template. Example:
+Xray augments HTML templates by wrapping their contents with HTML comments. For some environments such as [Angular.js](http://angularjs.org/), this can cause Angular templates to stop working because Angular expects only one root node in the template HTML. You can pass in the option `xray: false` to any partial render statements to ensure Xray does not augment that partial. Example:
 
 ```ruby
-render 'show', xray: false
+render partial: 'my_partial', locals: { xray: false }
 ```
+
+Note that this disables Xray's HTML comment wrappers for `my_partial`, but not any sub-partials rendered within that template, if any. You must pass `xray: false` to each `render` call where you want Xray disabled.
+
+Currently there is no way to disable Xray entirely for a given request. If this feature is important to you, please leave a comment on [issue #75](https://github.com/brentd/xray-rails/issues/75). PRs are appreciated!
 
 ## Contributing
 
