@@ -25,6 +25,16 @@ class Specimen {
   constructor(path, contents) {
     this.path = path
     this.contents = contents
+
+    const box = this.getBox()
+
+    this.el = document.createElement('div')
+    this.el.style.position = 'absolute'
+    this.el.style.background = 'rgba(255,255,255,0.5)'
+    this.el.style.top = box.top + 'px'
+    this.el.style.left = box.left + 'px'
+    this.el.style.width = box.width + 'px'
+    this.el.style.height = box.height + 'px'
   }
 
   getBox() {
@@ -46,10 +56,12 @@ class Specimen {
   }
 }
 
-// There is no CSS selector for finding comment nodes.
-function getComments(context) {
+// There is no CSS selector for comment nodes, so this function walks the DOM.
+function getComments(rootNode) {
   var foundComments = []
-  var stack = [context]
+
+  // A stack should be faster than recursion.
+  var stack = [rootNode]
 
   while (stack.length > 0) {
     var el = stack.pop()
@@ -62,9 +74,55 @@ function getComments(context) {
       }
     }
   }
+
   return foundComments
 }
 
+class Overlay {
+  constructor() {
+    this.showing = false
+    this.specimens = []
+    this.escHandler = e => e.keyCode === 27 && this.hide()
+
+    this.el = document.createElement('div')
+    this.el.style.position   = 'fixed'
+    this.el.style.top        = 0
+    this.el.style.right      = 0
+    this.el.style.bottom     = 0
+    this.el.style.left       = 0
+    this.el.style.background = 'rgba(0,0,0,0.6)'
+  }
+
+  toggle() {
+    this.showing ? this.hide() : this.show()
+  }
+
+  show() {
+    document.addEventListener('keydown', this.escHandler)
+    this.showing = true
+
+    this.specimens.forEach(specimen => {
+      this.el.appendChild(specimen.el)
+    })
+
+    document.body.appendChild(this.el)
+  }
+
+  hide() {
+    document.removeEventListener('keydown', this.escHandler)
+    this.showing = false
+    document.body.removeChild(this.el)
+  }
+}
+
+const isMac = navigator.platform.toLowerCase().indexOf('mac') !== -1
+const overlay = new Overlay()
+
 document.addEventListener('DOMContentLoaded', function() {
-  console.log(findSpecimens().map(x => x.getBox()))
+  document.addEventListener('keydown', e => {
+    if ((isMac ? e.metaKey : e.ctrlKey) && e.shiftKey && e.keyCode === 88) {
+      overlay.specimens = findSpecimens()
+      overlay.toggle()
+    }
+  })
 })
