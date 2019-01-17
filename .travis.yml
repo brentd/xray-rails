@@ -18,4 +18,4 @@ matrix:
       env: RAILS_VERSION="~> 5.0.0"
     - rvm: 2.4.0
       env: RAILS_VERSION="~> 5.0.0"
-before_install: gem update bundler
+before_install: gem install bundler -v "~> 1.17" --no-document
