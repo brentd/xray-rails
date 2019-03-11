@@ -18,6 +18,13 @@ describe Xray::Engine do
       expect(subject.render(*xray_enabled_render_args)).to eql(augmented_render_result)
     end
 
+    it 'should render and augment when template source is an empty string' do
+      subject.should_receive(:render_without_xray).with(*xray_enabled_render_args).and_return('')
+      subject.should_receive(:identifier).and_return(html_identifier)
+      Xray.should_receive(:augment_template).with('', html_identifier).and_return(augmented_render_result)
+      expect(subject.render(*xray_enabled_render_args)).to eql(augmented_render_result)
+    end
+
     it 'should render but not augment HTML if :xray => false passed as an option' do
       subject.should_receive(:render_without_xray).with(*xray_enabled_render_args).and_return(render_result)
       subject.should_receive(:identifier).and_return(html_identifier)
@@ -30,6 +37,13 @@ describe Xray::Engine do
       subject.should_receive(:identifier).and_return(txt_identifier)
       Xray.should_not_receive(:augment_template)
       expect(subject.render(*xray_disabled_render_args)).to eql(plain_text_result)
+    end
+
+    it 'should render but not augment when template source is nil' do
+      subject.should_receive(:render_without_xray).with(*xray_enabled_render_args).and_return(nil)
+      subject.should_receive(:identifier).and_return(html_identifier)
+      Xray.should_not_receive(:augment_template)
+      expect(subject.render(*xray_enabled_render_args)).to eql(nil)
     end
   end
 end
