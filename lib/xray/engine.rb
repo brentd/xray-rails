@@ -33,7 +33,7 @@ module Xray
 
           options = args.last.kind_of?(Hash) ? args.last : {}
 
-          if suitable_template && !(options.has_key?(:xray) && (options[:xray] == false))
+          if source && suitable_template && !(options.has_key?(:xray) && (options[:xray] == false))
             Xray.augment_template(source, path)
           else
             source
