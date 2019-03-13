@@ -11,6 +11,8 @@ lesser changes or bug fixes.
 ## [Unreleased][]
 
 * Your contribution here!
+* Gracefully handle nil templates
+  [#96](https://github.com/brentd/xray-rails/pull/96)
 
 ## [0.3.1][] (2017-06-16)
 
