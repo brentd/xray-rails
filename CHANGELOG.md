@@ -11,6 +11,9 @@ lesser changes or bug fixes.
 ## [Unreleased][]
 
 * Your contribution here!
+
+## [0.3.2][] (2019-03-16)
+
 * Gracefully handle nil templates
   [#96](https://github.com/brentd/xray-rails/pull/96)
 
@@ -80,7 +83,8 @@ lesser changes or bug fixes.
 
 
 [Semver]: http://semver.org
-[Unreleased]: https://github.com/brentd/xray-rails/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/brentd/xray-rails/compare/v0.3.2...HEAD
+[0.3.2]: https://github.com/brentd/xray-rails/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/brentd/xray-rails/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/brentd/xray-rails/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/brentd/xray-rails/compare/v0.1.23...v0.2.0
