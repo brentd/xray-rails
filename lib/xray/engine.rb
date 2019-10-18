@@ -55,7 +55,7 @@ module Xray
         end
 
         def self.run(filename, source, context)
-          path = context.pathname.to_s
+          path = Pathname.new(context.filename).to_s
           if path =~ /^#{Rails.root}.+\.(jst)(\.|$)/
             Xray.augment_template(source, path)
           else
