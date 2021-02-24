@@ -15,4 +15,5 @@ end
 
 Capybara.configure do |config|
   config.ignore_hidden_elements = false
+  config.javascript_driver = :selenium_headless
 end

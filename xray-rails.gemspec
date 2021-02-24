@@ -23,4 +23,10 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'jquery-rails'
   gem.add_development_dependency 'haml'
   gem.add_development_dependency 'capybara'
+  unless ENV['CI'] == 'true'
+    gem.add_development_dependency 'selenium-webdriver'
+    gem.add_development_dependency 'puma'
+    # webdrivers gem uses &., which isn't available in older Rubies
+    gem.add_development_dependency 'webdrivers'
+  end
 end
