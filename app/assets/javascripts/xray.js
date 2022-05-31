@@ -12,7 +12,9 @@
   }
 
   MAX_ZINDEX = 2147483647;
-
+  Xray.config = {
+    keyCodeTrigger: 88 // 'x'
+  }
   Xray.init = (function() {
     var is_mac;
     if (Xray.initialized) {
@@ -21,7 +23,7 @@
     Xray.initialized = true;
     is_mac = navigator.platform.toUpperCase().indexOf('MAC') !== -1;
     $(document).keydown(function(e) {
-      if ((is_mac && e.metaKey || !is_mac && e.ctrlKey) && e.shiftKey && e.keyCode === 88) {
+      if ((is_mac && e.metaKey || !is_mac && e.ctrlKey) && e.shiftKey && e.keyCode === Xray.config.keyCodeTrigger) {
         if (Xray.isShowing) {
           Xray.hide();
         } else {

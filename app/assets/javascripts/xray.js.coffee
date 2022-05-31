@@ -3,7 +3,9 @@ return unless $ = window.jQuery
 
 # Max CSS z-index. The overlay and xray bar use this.
 MAX_ZINDEX = 2147483647
-
+Xray.config = {
+  keyCodeTrigger: 88 # 'x'
+}
 # Initialize Xray. Called immediately, but some setup is deferred until DOM ready.
 Xray.init = do ->
   return if Xray.initialized
@@ -13,8 +15,8 @@ Xray.init = do ->
 
   # Register keyboard shortcuts
   $(document).keydown (e) ->
-    # cmd+shift+x on Mac, ctrl+shift+x on other platforms
-    if (is_mac and e.metaKey or !is_mac and e.ctrlKey) and e.shiftKey and e.keyCode is 88
+    # default cmd+shift+x on Mac, ctrl+shift+x on other platforms
+    if (is_mac and e.metaKey or !is_mac and e.ctrlKey) and e.shiftKey and e.keyCode is Xray.config.keyCodeTrigger
       if Xray.isShowing then Xray.hide() else Xray.show()
     if Xray.isShowing and e.keyCode is 27 # esc
       Xray.hide()
