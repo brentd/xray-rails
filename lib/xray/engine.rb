@@ -21,10 +21,10 @@ module Xray
       ActionView::Template.class_eval do
         extend Xray::Aliasing
 
-        def render_with_xray(*args, &block)
+        def render_with_xray(*args, **kwargs, &block)
           path = identifier
           view = args.first
-          source = render_without_xray(*args, &block)
+          source = render_without_xray(*args, **kwargs, &block)
 
           suitable_template = !(view.respond_to?(:mailer) && view.mailer) &&
                               !path.include?('_xray_bar') &&
