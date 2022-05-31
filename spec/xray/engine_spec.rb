@@ -46,5 +46,57 @@ describe Xray::Engine do
       expect(subject.render(*xray_enabled_render_args)).to eql(nil)
     end
   end
+
+  context 'ActionView::ViewPaths monkeypatch' do
+    context 'on adding single variant path' do
+      let(:view_path_arg) { Rails.root.join('app', 'views', 'variant_1') }
+
+      context '#append_view_path' do
+        subject { Xray.request_info[:view_paths][:append] }
+
+        it 'should append additional view paths to Xray.request_info[:view_paths][:append]' do
+          allow_any_instance_of(ActionView::LookupContext).to receive(:append_view_path_without_xray).with(view_path_arg)
+          allow_any_instance_of(ActionView::LookupContext).to receive(:append_view_path).with(view_path_arg)
+          ActionController::Base.new.append_view_path view_path_arg
+          is_expected.to include(view_path_arg)
+        end
+      end
+      context '#prepend_view_path' do
+        subject { Xray.request_info[:view_paths][:prepend] }
+
+        it 'should prepend additional view paths to Xray.request_info[:view_paths][:prepend]' do
+          allow_any_instance_of(ActionView::LookupContext).to receive(:prepend_view_path_without_xray).with(view_path_arg)
+          allow_any_instance_of(ActionView::LookupContext).to receive(:prepend_view_path).with(view_path_arg)
+          ActionController::Base.new.prepend_view_path(view_path_arg)
+          is_expected.to include(view_path_arg)
+        end
+      end
+    end
+
+    context 'on adding arrayed variant path' do
+      let(:view_path_arg) { [Rails.root.join('app', 'views', 'variant_1'), Rails.root.join('app', 'views', 'variant_2')] }
+
+      context '#append_view_path' do
+        subject { Xray.request_info[:view_paths][:append] }
+
+        it 'should append additional view paths to Xray.request_info[:view_paths][:append]' do
+          allow_any_instance_of(ActionView::LookupContext).to receive(:append_view_path_with_xray).with(view_path_arg)
+          allow_any_instance_of(ActionView::LookupContext).to receive(:append_view_path).with(view_path_arg)
+          ActionController::Base.new.append_view_path view_path_arg
+          is_expected.to include(*view_path_arg)
+        end
+      end
+      context '#prepend_view_path' do
+        subject { Xray.request_info[:view_paths][:prepend] }
+
+        it 'should prepend additional view paths to Xray.request_info[:view_paths][:prepend]' do
+          allow_any_instance_of(ActionView::LookupContext).to receive(:prepend_view_path_without_xray).with(view_path_arg)
+          allow_any_instance_of(ActionView::LookupContext).to receive(:prepend_view_path).with(view_path_arg)
+          ActionController::Base.new.prepend_view_path view_path_arg
+          is_expected.to include(*view_path_arg)
+        end
+      end
+    end
+  end
 end
 
