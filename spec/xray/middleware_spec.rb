@@ -95,6 +95,14 @@ describe Xray::Middleware, "in a Rails app" do
     expect(page).to have_selector('script[src^="/assets/xray"]')
   end
 
+  if Gem.loaded_specs['rails'].version >= Gem::Version.new('5.2.0')
+    it "adds nonce to the script tag" do
+      visit '/'
+      expect(page).to have_selector('script[src^="/assets/xray"][nonce]')
+      expect(page.find('script[src^="/assets/xray"]')[:nonce]).to eq page.find('meta[name="csp-nonce"]')[:content]
+    end
+  end
+
   it "injects the xray bar into the response" do
     visit '/'
     expect(page).to have_selector('#xray-bar')

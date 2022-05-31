@@ -60,6 +60,10 @@ module Dummy
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+
+    if config.respond_to?(:hosts)
+      config.hosts << "www.example.com"
+    end
   end
 end
 

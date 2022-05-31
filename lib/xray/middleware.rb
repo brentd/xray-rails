@@ -96,6 +96,7 @@ module Xray
     #   <script src="/assets/jquery-min.js"></script>
     #   <script src="/assets/jquery.min.1.9.1.js"></script>
     #   <script src="/assets/jquery.min.1.9.1-89255b9dbf3de2fbaa6754b3a00db431.js"></script>
+    #   <script src="/assets/xray.debug-1f24c4eb56c76ca56a881d5560552a44e98c0eeb30f47f8775a3d5557c7bffe3.js" nonce="UCCdiIBNaam7el9cVHptyA=="></script>
     def script_matcher(script_name)
       /
         <script[^>]+
@@ -103,17 +104,22 @@ module Xray
         (2|3)?                 # Optional jQuery version specification
         ([-.]{1}[\d\.]+)?      # Optional version identifier (e.g. -1.9.1)
         ([-.]{1}min)?          # Optional -min suffix
-        (\.self)?              # Sprockets 3 appends .self to the filename
+        (\.(?:self|source|debug))?  # Sprockets 3 appends .self to the filename; Sprockets 4 appends .source or .debug
         (-\h{32,64})?          # Fingerprint varies based on Sprockets version
         \.js                   # Must have .js extension
         [^>]+><\/script>
       /x
     end
 
+    def nonce_from_meta_tag(html)
+      html[/<meta name="csp-nonce" content="([^"]*)"/, 1].presence
+    end
+
     # Appends the given `script_name` after the `after_script_name`.
     def append_js!(html, after_script_name, script_name)
       html.sub!(script_matcher(after_script_name)) do
-        "#{$~}\n" + helper.javascript_include_tag(script_name)
+        nonce = nonce_from_meta_tag(html)
+        "#{$~}\n" + helper.javascript_include_tag(script_name, nonce: nonce)
       end
     end
 
