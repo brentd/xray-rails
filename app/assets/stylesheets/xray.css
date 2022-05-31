@@ -38,7 +38,7 @@
 #xray-overlay {
   position: fixed; left: 0; top: 0; bottom: 0; right: 0;
   background: rgba(0,0,0,0.7);
-  background: -webkit-radial-gradient(center, ellipse cover, rgba(0,0,0,0.4) 10%, rgba(0,0,0,0.8) 100%);
+  background: radial-gradient(center, ellipse farthest-corner, rgba(0,0,0,0.4) 10%, rgba(0,0,0,0.8) 100%);
   z-index: 9000;
 }
 
