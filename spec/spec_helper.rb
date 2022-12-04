@@ -11,6 +11,9 @@ end
 RSpec.configure do |config|
   config.include Capybara::DSL
   config.include Capybara::RSpecMatchers
+  config.expect_with :rspec do |expectations|
+    expectations.syntax = :expect
+  end
 end
 
 Capybara.configure do |config|

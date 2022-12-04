@@ -39,6 +39,7 @@ module Xray
             source
           end
         end
+        ruby2_keywords :render_with_xray if respond_to?(:ruby2_keywords, true)
         xray_method_alias :render
       end
 
