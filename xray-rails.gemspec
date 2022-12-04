@@ -23,4 +23,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'jquery-rails'
   gem.add_development_dependency 'haml'
   gem.add_development_dependency 'capybara'
+  gem.add_development_dependency 'sprockets-rails'
 end
