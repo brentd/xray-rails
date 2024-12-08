@@ -12,7 +12,9 @@ RSpec.configure do |config|
   config.include Capybara::DSL
   config.include Capybara::RSpecMatchers
 end
+Dir[Pathname.new(__dir__).join('support/**/*.rb')].each {|f| require f}
 
 Capybara.configure do |config|
   config.ignore_hidden_elements = false
+  config.javascript_driver = :selenium_headless
 end

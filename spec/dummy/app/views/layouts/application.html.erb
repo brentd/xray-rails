@@ -2,9 +2,12 @@
 <html>
 <head>
   <title>Xray</title>
-  <%= stylesheet_link_tag    "application", :media => "all" %>
-  <%= javascript_include_tag "application" %>
+  <%= stylesheet_link_tag    "application", media: "all" %>
+  <%= javascript_include_tag "application", nonce: true %>
+  <%# With Sprockets 4, it doesn't add a separate script tag for jquery, but one is needed for xray %>
+  <%= javascript_include_tag "jquery", nonce: true  if Gem.loaded_specs['sprockets'].version >= Gem::Version.new('4.0.0') %>
   <%= csrf_meta_tags %>
+  <%= csp_meta_tag  if Gem.loaded_specs['rails'].version >= Gem::Version.new('5.2.0') %>
 </head>
 <body>
 
