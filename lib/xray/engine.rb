@@ -42,6 +42,27 @@ module Xray
         xray_method_alias :render
       end
 
+      ActionView::ViewPaths.class_eval do
+        extend Xray::Aliasing
+
+        def append_view_path_with_xray(args)
+          source = prepend_view_path_without_xray(args)
+          Xray.request_info[:view_paths] ||= {}
+          Xray.request_info[:view_paths][:append] ||= []
+          Xray.request_info[:view_paths][:append] += [*args]
+          source
+        end
+        xray_method_alias :append_view_path
+        def prepend_view_path_with_xray(args)
+          source = prepend_view_path_without_xray(args)
+          Xray.request_info[:view_paths] ||= {}
+          Xray.request_info[:view_paths][:prepend] ||= []
+          Xray.request_info[:view_paths][:prepend] += [*args]
+          source
+        end
+        xray_method_alias :prepend_view_path
+      end
+
       # Sprockets preprocessor interface which supports all versions of Sprockets.
       # See: https://github.com/rails/sprockets/blob/master/guides/extending_sprockets.md#supporting-all-versions-of-sprockets-in-processors
       class JavascriptPreprocessor
