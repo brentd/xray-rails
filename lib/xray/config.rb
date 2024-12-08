@@ -27,6 +27,10 @@ module Xray
       end
     end
 
+    def defer_script
+      local_config[:defer_script] || false
+    end
+
     def to_yaml
       {editor: editor}.to_yaml
     end
